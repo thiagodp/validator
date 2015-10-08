@@ -177,19 +177,21 @@ class FormatChecker {
 	}
 	
 	function _numeric( $value ) {
-		return is_numeric( $value );
+		return empty( $value ) || is_numeric( $value );
 	}
 	
 	function _integer( $value ) {
-		return is_integer( $value );
+		return empty( $value ) || is_integer( $value );
 	}
 	
 	function _price( $value ) {
+		if ( empty( $value ) ) { return true; }
 		$separators = $this->decimalPlacesSeparatorAsString();
 		return $this->matches( '^[[:digit:]]*[' . $separators . ']{0,1}[][[:digit:]]{1,2}$', $value );
 	}
 	
 	function _tax( $value ) {
+		if ( empty( $value ) ) { return true; }
 		$separators = $this->decimalPlacesSeparatorAsString();
 		return $this->matches( '^[[:digit:]]*[' . $separators . ']{0,1}[][[:digit:]]{1,3}$', $value );
 	}

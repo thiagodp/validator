@@ -72,26 +72,155 @@ class FormatCheckerTest extends PHPUnit_Framework_TestCase {
 	function test_word() {
 		$expectations = array(
 			// FAILS ----------------------------------------------------------
-			' '							=> false,
-			'.'							=> false,			
-			'$#!@'						=> false,
-			"\r\n"						=> false,	// Win EOL
-			"\r"						=> false,	// Mac EOL
-			'A '						=> false,
-			'A. '						=> false,
+			' '			=> false,
+			'.'			=> false,			
+			'$#!@'		=> false,
+			"\r\n"		=> false,	// Win EOL
+			"\r"		=> false,	// Mac EOL
+			'A '		=> false,
+			'A. '		=> false,
 			// PASS -----------------------------------------------------------
-			"\n"						=> true,	// Unix EOL			
-			''							=> true,
-			'_'							=> true,
-			'AÁÀÄaáàä'					=> true,			
-			'019'						=> true,
-			'A_'						=> true,
-			'_A_'						=> true
+			"\n"		=> true,	// Unix EOL			
+			''			=> true,
+			'_'			=> true,
+			'AÁÀÄaáàä'	=> true,			
+			'019'		=> true,
+			'A_'		=> true,
+			'_A_'		=> true
 			);
 		
 		$this->verify_characters( $expectations, '_word' );
 	}
+	
+	// function test_alphanumeric() {}
+	// function test_alpha() {}
+	// function test_ascii() {}
+	
+	function test_numeric() {
+		$expectations = array(
+			// FAILS ----------------------------------------------------------
+			' '			=> false,
+			'.'			=> false,			
+			'$#!@'		=> false,
+			"\n"		=> false,	// Unix EOL
+			"\r\n"		=> false,	// Win EOL
+			"\r"		=> false,	// Mac EOL
+			'A'			=> false,
+			// PASS -----------------------------------------------------------
+			''			=> true,
+			'0'			=> true,
+			'.0'		=> true,	// decimal separator
+			'-.0'		=> true,	// signed negative + decimal separator
+			'+.0'		=> true,	// signed positive + decimal separator
+			'+1'		=> true,	// signed positive	
+			'-1'		=> true,	// signed negative
+			'+1.0'		=> true,	// signed positive + decimal separator
+			'-1.0'		=> true,	// signed negative + decimal separator
+			'1e5'		=> true,	// power notation
+			'-1e5'		=> true,	// power notation
+			'1e-5'		=> true,	// power notation
+			'-1e-5'		=> true		// power notation
+			);
 		
+		$this->verify_characters( $expectations, '_numeric' );
+	}
+	
+	
+	function test_integer() {
+		$expectations = array(
+			// FAILS ----------------------------------------------------------
+			' '			=> false,
+			'.'			=> false,			
+			'$#!@'		=> false,
+			"\n"		=> false,	// Unix EOL
+			"\r\n"		=> false,	// Win EOL
+			"\r"		=> false,	// Mac EOL
+			'A'			=> false,
+			'.0'		=> false,	// decimal separator
+			'-.0'		=> false,	// signed negative + decimal separator
+			'+.0'		=> false,	// signed positive + decimal separator			
+			'+1.0'		=> false,	// signed positive + decimal separator
+			'-1.0'		=> false,	// signed negative + decimal separator			
+			'+1'		=> false,	// signed positive
+			'1e5'		=> false,	// power notation
+			'-1e5'		=> false,	// power notation
+			'1e-5'		=> false,	// power notation
+			'-1e-5'		=> false,	// power notation			
+			// PASS -----------------------------------------------------------
+			''			=> true,
+			'0'			=> true,
+			'-1'		=> true		// signed negative
+			);
+		
+		$this->verify_characters( $expectations, '_integer' );
+	}
+	
+	
+	function test_price() {
+		$expectations = array(
+			// FAILS ----------------------------------------------------------
+			' '			=> false,
+			'.'			=> false,			
+			'$#!@'		=> false,
+			"\n"		=> false,	// Unix EOL
+			"\r\n"		=> false,	// Win EOL
+			"\r"		=> false,	// Mac EOL
+			'A'			=> false,
+			'1e5'		=> false,	// power notation
+			'-1e5'		=> false,	// power notation
+			'1e-5'		=> false,	// power notation
+			'-1e-5'		=> false,	// power notation
+			'-.0'		=> false,	// signed negative + decimal separator
+			'+.0'		=> false,	// signed positive + decimal separator
+			'+1'		=> false,	// signed positive	
+			'-1'		=> false,	// signed negative
+			'+1.0'		=> false,	// signed positive + decimal separator
+			'-1.0'		=> false,	// signed negative + decimal separator
+			'1.000'		=> false,	// 3 decimal places
+			// PASS -----------------------------------------------------------
+			''			=> true,
+			'0'			=> true,
+			'.0'		=> true,	// decimal separator
+			'1.0'		=> true,	// 1 decimal place
+			'1.00'		=> true,	// 2 decimal places
+			);
+		
+		$this->verify_characters( $expectations, '_price' );
+	}
+
+
+	function test_tax() {
+		$expectations = array(
+			// FAILS ----------------------------------------------------------
+			' '			=> false,
+			'.'			=> false,			
+			'$#!@'		=> false,
+			"\n"		=> false,	// Unix EOL
+			"\r\n"		=> false,	// Win EOL
+			"\r"		=> false,	// Mac EOL
+			'A'			=> false,
+			'1e5'		=> false,	// power notation
+			'-1e5'		=> false,	// power notation
+			'1e-5'		=> false,	// power notation
+			'-1e-5'		=> false,	// power notation
+			'-.0'		=> false,	// signed negative + decimal separator
+			'+.0'		=> false,	// signed positive + decimal separator
+			'+1'		=> false,	// signed positive	
+			'-1'		=> false,	// signed negative
+			'+1.0'		=> false,	// signed positive + decimal separator
+			'-1.0'		=> false,	// signed negative + decimal separator
+			'1.0000'	=> false,	// 4 decimal places
+			// PASS -----------------------------------------------------------
+			''			=> true,
+			'0'			=> true,
+			'.0'		=> true,	// decimal separator
+			'1.0'		=> true,	// 1 decimal place
+			'1.00'		=> true,	// 2 decimal places
+			'1.000'		=> true,	// 3 decimal places
+			);
+		
+		$this->verify_characters( $expectations, '_tax' );
+	}
 }
 
 ?>
