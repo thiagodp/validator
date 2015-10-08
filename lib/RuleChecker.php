@@ -131,7 +131,7 @@ class RuleChecker {
 	}
 	
 	function regex( $value, $ruleValue ) {
-		return preg_match( $ruleValue, $value );
+		return 1 === preg_match( $ruleValue, $value );
 	}
 	
 	function format( $value, $ruleValue ) {
