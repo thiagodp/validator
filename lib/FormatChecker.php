@@ -21,9 +21,9 @@ class Format {
 	const DATE			= 'date';			// mm/dd/yyyy
 	const TIME			= 'time';			// hh:mm:ss
 	const SHORT_TIME	= 'shorttime';		// hh:mm
-	const DATE_TIME		= 'datetime';
+	const DATE_TIME		= 'datetime';		// mm/dd/yyyy hh:mm:ss
 	const EMAIL			= 'email';
-	const HTTP_URL		= 'http';			// http://...
+	const HTTP_URL		= 'http';			// http://... or https://...
 	const URL			= 'url';			// any://...
 	const IP			= 'ip';				// ipv4 or ipv6
 	const IPV4			= 'ipv4';

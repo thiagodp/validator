@@ -22,7 +22,8 @@ class FormatCheckerTest extends PHPUnit_Framework_TestCase {
 	function verify_characters( array $expectations, $method ) {
 		foreach ( $expectations as $characters => $expected ) {
 			$result = call_user_func( array( $this->fc, $method ), $characters );
-			$msg = 'Rule "' . $method . '" does not match with "' . $characters . '"';
+			$msg = 'Rule "' . $method . '" does not match with "' .
+				str_replace( array( "\n", "\r" ), array( "\\n", "\\r" ), $characters ) . '"';
 			$this->assertEquals( $expected, $result, $msg );
 		}
 	}
@@ -47,13 +48,15 @@ class FormatCheckerTest extends PHPUnit_Framework_TestCase {
 			'_'										=> false,	// underline alone			
 			'019'									=> false,	// numbers
 			'$#!@'									=> false,	// symbols
-			PHP_EOL									=> false,	// EOL
+			"\r\n"									=> false,	// Win EOL
+			"\r"									=> false,	// Mac EOL
 			'John '									=> false,	// space at end
 			'John-'									=> false,	// dash at end
 			'John\''								=> false,	// plic at end
 			'Jhon 5 Zac'							=> false,	// not accept numbers
 			'john@site.com'							=> false,	// not accept symbols
 			// PASS -----------------------------------------------------------
+			"\n"									=> true,	// Unix EOL			
 			''										=> true,
 			'AÁÀÄaáàä'								=> true,			
 			'Bob'									=> true,
@@ -72,10 +75,12 @@ class FormatCheckerTest extends PHPUnit_Framework_TestCase {
 			' '							=> false,
 			'.'							=> false,			
 			'$#!@'						=> false,
-			PHP_EOL						=> false,
+			"\r\n"						=> false,	// Win EOL
+			"\r"						=> false,	// Mac EOL
 			'A '						=> false,
 			'A. '						=> false,
 			// PASS -----------------------------------------------------------
+			"\n"						=> true,	// Unix EOL			
 			''							=> true,
 			'_'							=> true,
 			'AÁÀÄaáàä'					=> true,			
