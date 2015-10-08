@@ -9,22 +9,23 @@ namespace phputil;
 class Format {
 	
 	const ANYTHING		= 'anything';
-	const WORD			= 'word';		// ALPHA_NUMERIC + SPACE + TAB	
-	const ALPHA_NUMERIC	= 'alphanumeric';
-	const ALPHA			= 'alpha';
-	const ASCII			= 'ascii';		// character codes 0-127
-	const NUMERIC		= 'numeric';
+	const NAME			= 'name';			// alpha, space, dot, dash
+	const WORD			= 'word';			// alpha, underline
+	const ALPHA_NUMERIC	= 'alphanumeric';	// alpha, number
+	const ALPHA			= 'alpha';			// just alpha
+	const ASCII			= 'ascii';			// character codes 0-127
+	const NUMERIC		= 'numeric';		// number
 	const INTEGER		= 'integer';
-	const PRICE			= 'price';		// numeric(N,2)
-	const TAX			= 'tax';		// numeric(N,3)
-	const DATE			= 'date';		// mm/dd/yyyy
-	const TIME			= 'time';		// hh:mm:ss
-	const SHORT_TIME	= 'shorttime';	// hh:mm
+	const PRICE			= 'price';			// numeric(N,2)
+	const TAX			= 'tax';			// numeric(N,3)
+	const DATE			= 'date';			// mm/dd/yyyy
+	const TIME			= 'time';			// hh:mm:ss
+	const SHORT_TIME	= 'shorttime';		// hh:mm
 	const DATE_TIME		= 'datetime';
 	const EMAIL			= 'email';
-	const HTTP_URL		= 'http';		// http://...
-	const URL			= 'url';		// any://...
-	const IP			= 'ip';			// ipv4 or ipv6
+	const HTTP_URL		= 'http';			// http://...
+	const URL			= 'url';			// any://...
+	const IP			= 'ip';				// ipv4 or ipv6
 	const IPV4			= 'ipv4';
 	const IPV6			= 'ipv6';
 	
@@ -141,8 +142,8 @@ class FormatChecker {
 			: $this->decimalPlacesSeparator;
 	}
 	
-	function encodingIsUnicode() {
-		return preg_match( '/(utf)/i', $this->encoding );
+	function encodingIsUnicode() {		
+		return preg_match( '/^(utf)/i', $this->encoding );
 	}
 	
 	function encodingRegExSymbol() {
@@ -155,21 +156,24 @@ class FormatChecker {
 		return true;
 	}
 	
+	function _name( $value ) {
+		return $this->matches( '^([[:alpha:]]{2,}((( )|(\.)|(\-)|(\')|(\. ))?[[:alpha:]]+\.?)*){0,1}$', $value );
+	}
+	
 	function _word( $value ) {
-		$u = $this->encodingRegExSymbol();
-		return preg_match( '/[[:word:]]*/' . $u, $value );
+		return $this->matches( '^[[:word:]]*$', $value );
 	}	
 	
 	function _alphanumeric( $value ) {
-		return preg_match( '/[[:alnum:]]*/' . $u, $value );
+		return $this->matches( '^[[:alnum:]]*$', $value );
 	}
 	
 	function _alpha( $value ) {
-		return preg_match( '/[[:alpha:]]*/' . $u, $value );
+		return $this->matches( '^[[:alpha:]]*$', $value );
 	}
 	
 	function _ascii( $value ) {
-		return preg_match( '/[[:ascii:]]*/' . $u, $value );
+		return $this->matches( '^[[:ascii:]]*$', $value );
 	}
 	
 	function _numeric( $value ) {
@@ -182,13 +186,20 @@ class FormatChecker {
 	
 	function _price( $value ) {
 		$separators = $this->decimalPlacesSeparatorAsString();
-		return preg_match( '[[:digit:]]*[' . $separators . ']{0,1}[][[:digit:]]{1,2}', $value );
+		return $this->matches( '^[[:digit:]]*[' . $separators . ']{0,1}[][[:digit:]]{1,2}$', $value );
 	}
 	
 	function _tax( $value ) {
 		$separators = $this->decimalPlacesSeparatorAsString();
-		return preg_match( '[[:digit:]]*[' . $separators . ']{0,1}[][[:digit:]]{1,3}', $value );
-	}	
+		return $this->matches( '^[[:digit:]]*[' . $separators . ']{0,1}[][[:digit:]]{1,3}$', $value );
+	}
+	
+	// OTHER __________________________________________________________________
+	
+	protected function matches( $regex, $value ) {
+		$u = $this->encodingRegExSymbol();		
+		return 1 === preg_match( '/'. $regex . '/' . $u, $value );
+	}
 
 }
 
