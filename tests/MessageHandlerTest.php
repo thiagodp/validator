@@ -20,40 +20,40 @@ class MessageHandlerTest extends PHPUnit_Framework_TestCase {
 		$this->mh = new MessageHandler( $this->locale );
 	}
 	
-	function test_empty_locale() {
+	function test_can_add_messages_to_an_empty_locale() {
 		$m = new MessageHandler( '' );
 		$message = 'value';
 		$m->add( 'key', $message );
 		$this->assertEquals( $message, $m->ruleMessage( 'key' ) );
 	}
 	
-	function test_rule_message() {
+	function test_can_add_messages_to_a_defined_locale() {
 		$message = 'value';
 		$this->mh->add( 'key', $message );
 		$this->assertEquals( $message, $this->mh->ruleMessage( 'key' ) );
 	}
 	
-	function test_messages_from_locale() {
+	function test_can_get_messages_from_a_locale() {
 		$message = 'value';
 		$this->mh->add( 'key', $message );
 		$expected = array( 'key' => $message );
 		$this->assertEquals( $expected, $this->mh->messagesFromLocale() );
 	}
 	
-	function test_messages() {
+	function test_can_get_all_messages() {
 		$message = 'value';
 		$this->mh->add( 'key', $message );
 		$expected = array( $this->locale => array( 'key' => $message ) );
 		$this->assertEquals( $expected, $this->mh->messages() );
 	}
 	
-	function test_format_returns_empty_message_when_rule_is_not_found() {
+	function test_format_returns_an_empty_message_when_the_rule_is_not_found() {
 		$expected = '';
 		$got = $this->mh->format( 'any value', 'rule key', array() );
 		$this->assertEquals( $expected, $got );
 	}	
 	
-	function test_format_message_with_value() {
+	function test_format_allows_to_use_the_value() {
 		$value = 'hello';
 		$message = 'value is {value}';
 		$this->mh->add( 'key', $message );
@@ -64,7 +64,7 @@ class MessageHandlerTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $expected, $got );
 	}
 	
-	function test_format_message_with_value_more_than_one_time_also_works() {
+	function test_format_allows_to_use_the_value_more_than_once() {
 		$value = 'hello';
 		$message = 'value is {value} {value} {value}';
 		$this->mh->add( 'key', $message );
@@ -75,7 +75,7 @@ class MessageHandlerTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $expected, $got );
 	}
 	
-	function test_format_message_with_label_string() {
+	function test_format_allows_to_use_a_label_as_string() {
 		$value = 'Bob';
 		$label = 'Name';
 		$message = '{label} is {value}';
@@ -92,7 +92,7 @@ class MessageHandlerTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $expected, $got );
 	}
 	
-	function test_format_message_with_label_array_with_locale() {
+	function test_format_allows_to_use_a_label_for_a_locale_as_array() {
 		$value = 'Bob';
 		$label = 'Name';
 		$message = '{label} is {value}';
@@ -109,7 +109,7 @@ class MessageHandlerTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $expected, $got );
 	}
 	
-	function test_format_message_with_label_array_without_locale_makes_the_label_empty() {
+	function test_format_returns_an_empty_message_for_a_label_as_array_without_a_locale() {
 		$value = 'Bob';
 		$label = 'Name';
 		$message = '{label} is {value}';
@@ -126,7 +126,7 @@ class MessageHandlerTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $expected, $got );
 	}
 	
-	function test_format_message_with_rule_name() {
+	function test_format_allows_to_use_rules_in_the_message() {
 		$value = 'Bob';
 		$label = 'Name';
 		
