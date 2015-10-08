@@ -8,13 +8,20 @@ use PHPUnit_Framework_TestCase;
 use phputil\FormatChecker;
 use phputil\RuleChecker;
 
+
+/** Class used in some tests */
+class Dummy {
+	function doSomething() { return false; }
+}
+
+
 /**
  * Tests RuleChecker.
  *
  * @author	Thiago Delgado Pinto
  */
 class RuleCheckerTest extends PHPUnit_Framework_TestCase {
-	
+		
 	private $fc = null;
 	private $rc = null;
 	
@@ -22,6 +29,25 @@ class RuleCheckerTest extends PHPUnit_Framework_TestCase {
 		$this->fc = new FormatChecker();
 		$this->rc = new RuleChecker( $this->fc );
 	}
+	
+	// METHOD HANDLING ________________________________________________________
+	
+	function test_can_add_a_method() {
+		$dummy = new Dummy();
+		$this->rc->add( 'myRule', array( $dummy, 'doSomething' ) );
+		$exists = isset( $this->rc->methods()[ 'myRule' ] );
+		$this->assertTrue( $exists );
+	}
+	
+	function test_can_remove_a_method() {
+		$dummy = new Dummy();
+		$this->rc->add( 'myRule', array( $dummy, 'doSomething' ) );
+		$this->rc->remove( 'myRule' );
+		$exists = isset( $this->rc->methods()[ 'myRule' ] );
+		$this->assertFalse( $exists );
+	}	
+	
+	// RULES __________________________________________________________________
 	
 	// Required
 	
