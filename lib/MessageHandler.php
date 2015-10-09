@@ -2,6 +2,15 @@
 namespace phputil;
 
 /**
+ *  Option.
+ *  
+ *  @author	Thiago Delgado Pinto
+ */
+class Option {
+	const LABEL	= 'label';	// value is string | array( locale => string )	
+}
+
+/**
  *  Message handler.
  *  
  *  @author	Thiago Delgado Pinto
@@ -10,7 +19,6 @@ class MessageHandler {
 	
 	// Additional keys
 	const VALUE = 'value';
-	const LABEL	= 'label';	// value is string | array( locale => string )
 	// ---
 	
 	private $locale;
@@ -66,9 +74,9 @@ class MessageHandler {
 		}
 		$rules = $ruleValuesMap; // copy
 		$rules[ self::VALUE ] = $value; // add value, so that {value} is possible.
-		if ( isset( $rules[ self::LABEL ] )
-			&& is_array( $rules[ self::LABEL ] )
-			&& count( $rules[ self::LABEL ] ) > 0
+		if ( isset( $rules[ Option::LABEL ] )
+			&& is_array( $rules[ Option::LABEL ] )
+			&& count( $rules[ Option::LABEL ] ) > 0
 			) {
 			
 			$localeArray = array();
@@ -79,13 +87,13 @@ class MessageHandler {
 			
 			$label = '';
 			foreach ( $localeArray as $loc ) {
-				if ( isset( $rules[ self::LABEL ][ $loc ] ) ) {
-					$label = $rules[ self::LABEL ][ $loc ];
+				if ( isset( $rules[ Option::LABEL ][ $loc ] ) ) {
+					$label = $rules[ Option::LABEL ][ $loc ];
 					break;
 				}
 			}			
 			// overwrites			
-			$rules[ self::LABEL ] = $label;
+			$rules[ Option::LABEL ] = $label;
 		}
 		//print_r( $matches ); die();
 		foreach ( $matches[ 0 ] as $m ) {
