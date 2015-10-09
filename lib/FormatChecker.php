@@ -8,26 +8,36 @@ namespace phputil;
  */
 class Format {
 	
-	const ANYTHING		= 'anything';
-	const NAME			= 'name';			// alpha, space, dot, dash
-	const WORD			= 'word';			// alpha, underline
-	const ALPHA_NUMERIC	= 'alphanumeric';	// alpha, number
-	const ALPHA			= 'alpha';			// just alpha
-	const ASCII			= 'ascii';			// character codes 0-127
-	const NUMERIC		= 'numeric';		// number
-	const INTEGER		= 'integer';
-	const PRICE			= 'price';			// numeric(N,2)
-	const TAX			= 'tax';			// numeric(N,3)
-	const DATE			= 'date';			// mm/dd/yyyy
-	const TIME			= 'time';			// hh:mm:ss
-	const SHORT_TIME	= 'shorttime';		// hh:mm
-	const DATE_TIME		= 'datetime';		// mm/dd/yyyy hh:mm:ss
-	const EMAIL			= 'email';
-	const HTTP_URL		= 'http';			// http://... or https://...
-	const URL			= 'url';			// any://...
-	const IP			= 'ip';				// ipv4 or ipv6
-	const IPV4			= 'ipv4';
-	const IPV6			= 'ipv6';
+	const ANYTHING			= 'anything';
+	const NAME				= 'name';				// alpha, space, dot, dash
+	const WORD				= 'word';				// alpha, underline
+	const ALPHA_NUMERIC		= 'alphanumeric';		// alpha, number
+	const ALPHA				= 'alpha';				// just alpha
+	const ASCII				= 'ascii';				// character codes 0-127
+	const NUMERIC			= 'numeric';			// number
+	const INTEGER			= 'integer';
+	const PRICE				= 'price';				// numeric(N,2)
+	const TAX				= 'tax';				// numeric(N,3)
+	/*
+	const DATE_YMD			= 'date_ymd';			// yyyy/dd/mm
+	const DATE_MDY			= 'date_mdy';			// mm/dd/yyyy
+	const DATE_DMY			= 'date_dmy';			// dd/mm/yyyy
+	
+	const DATE_YMD_DOTTED	= 'date_ymd_dotted';	// yyyy.dd.mm
+	const DATE_MDY_DOTTED	= 'date_mdy_dotted';	// mm.dd.yyyy
+	const DATE_DMY_DOTTED	= 'date_dmy_dotted';	// dd.mm.yyyy
+	*/
+	const DATE				= 'date';				// mm/dd/yyyy
+	const TIME				= 'time';				// hh:mm
+	const SHORT_TIME		= 'longtime';			// hh:mm:ss
+	const DATE_TIME			= 'datetime';			// mm/dd/yyyy hh:mm
+	const LONG_DATE_TIME	= 'longdatetime';		// mm/dd/yyyy hh:mm:ss	
+	const EMAIL				= 'email';
+	const HTTP_URL			= 'http';				// http://... or https://...
+	const URL				= 'url';				// any://...
+	const IP				= 'ip';					// ipv4 or ipv6
+	const IPV4				= 'ipv4';
+	const IPV6				= 'ipv6';
 	
     static function all() {
         return array_values( ( new \ReflectionClass( __CLASS__ ) )->getConstants() );
@@ -63,17 +73,22 @@ class FormatChecker {
 	
 	private $encoding;
 	private $decimalPlacesSeparator;
-	
 	private $dateFormat;
 	private $timeFormat;
-	private $shortTimeFormat;
+	private $longTimeFormat;
 	private $dateTimeFormat;
+	private $longDateTimeFormat;
 	
 	function __construct( $encoding = null ) {
 		$this->originalMethods = FormatChecker::originalMethods( $this );
 		$this->methods = array();
 		$this->encoding = isset( $encoding ) ? $encoding : Encoding::DEFAULT_ENCODING;
 		$this->decimalPlacesSeparator = '.';
+		$this->dateFormat = 'm/d/Y';
+		$this->timeFormat = 'H:i';
+		$this->longTimeFormat = 'H:i:s';
+		$this->dateTimeFormat = 'm/d/Y H:i';
+		$this->longDateTimeFormat = 'm/d/Y H:i:s';
 	}
 	
 	// METHOD HANDLING ________________________________________________________
@@ -122,11 +137,11 @@ class FormatChecker {
 		return $this->timeFormat;
 	}
 	
-	function shortTimeFormat( $shortTimeFormat = null ) { // getter/setter
-		if ( isset( $shortTimeFormat ) ) {
-			$this->shortTimeFormat = $shortTimeFormat;
+	function longTimeFormat( $longTimeFormat = null ) { // getter/setter
+		if ( isset( $longTimeFormat ) ) {
+			$this->longTimeFormat = $longTimeFormat;
 		}
-		return $this->shortTimeFormat;
+		return $this->longTimeFormat;
 	}
 	
 	function dateTimeFormat( $dateTimeFormat = null ) { // getter/setter
@@ -134,7 +149,14 @@ class FormatChecker {
 			$this->dateTimeFormat = $dateTimeFormat;
 		}
 		return $this->dateTimeFormat;
-	}	
+	}
+
+	function longDateTimeFormat( $longDateTimeFormat = null ) { // getter/setter
+		if ( isset( $longDateTimeFormat ) ) {
+			$this->longDateTimeFormat = $longDateTimeFormat;
+		}
+		return $this->longDateTimeFormat;
+	}
 	
 	protected function decimalPlacesSeparatorAsString() {
 		return is_array( $this->decimalPlacesSeparator )
@@ -196,12 +218,76 @@ class FormatChecker {
 		return $this->matches( '^[[:digit:]]*[' . $separators . ']{0,1}[][[:digit:]]{1,3}$', $value );
 	}
 	
+	function _date( $value ) {
+		return $this->checkDateTime( $this->dateFormat, $value );
+	}
+	
+	function _time( $value ) {
+		//if ( empty( $value ) ) { return true; }
+		//return $this->matches( '^([01]?[0-9]|2[0-3]):[0-5][0-9]$', $value );
+		return $this->checkDateTime( $this->timeFormat, $value );
+	}
+	
+	function _longtime( $value ) {
+		//if ( empty( $value ) ) { return true; }
+		//return $this->matches( '^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$', $value );
+		return $this->checkDateTime( $this->longTimeFormat, $value );
+	}
+	
+	function _datetime( $value ) {
+		return $this->checkDateTime( $this->dateTimeFormat, $value );
+	}
+	
+	function _longdatetime( $value ) {
+		return $this->checkDateTime( $this->longDateTimeFormat, $value );
+	}	
+	
+	function _email( $value ) {
+		if ( empty( $value ) ) { return true; }
+		return $this->matches( '^[[:alpha:]]\w*([-+.\']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$', $value );
+	}
+	
+	function _http( $value ) {
+		if ( empty( $value ) ) { return true; }
+		return $this->matches( '^((https?:\/\/)?\w+([-.]\w+)*\.\w+([-.]\w+)*)$', $value );
+	}
+	
+	function _url( $value ) {
+		if ( empty( $value ) ) { return true; }
+		return $this->matches( '^(\w+(:\/\/)?\w+([-.]\w+)*\.\w+([-.]\w+)*)$', $value );
+	}
+	
+	function _ip( $value ) {
+		return $this->_ipv4( $value ) || $this->_ipv6( $value );
+	}
+	
+	function _ipv4( $value ) {
+		if ( empty( $value ) ) { return true; }
+		$regex = '^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$';
+		return $this->matches( $regex, $value );
+	}
+	
+	function _ipv6( $value ) {
+		if ( empty( $value ) ) { return true; }
+		return $this->matches( '^(?:[A-Fa-f0-9]{1,4}:){7}[A-Fa-f0-9]{1,4}$', $value );
+	}
+	
 	// OTHER __________________________________________________________________
 	
 	protected function matches( $regex, $value ) {
 		$u = $this->encodingRegExSymbol();		
 		return 1 === preg_match( '/'. $regex . '/' . $u, $value );
 	}
+	
+	private function checkDateTime( $format, $value ) {
+		if ( empty( $value ) ) { return true; }		
+		try {
+			\DateTime::createFromFormat( $format, $value );
+			return true;
+		} catch ( \Exception $e ) {
+			return false;
+		}
+	}	
 
 }
 

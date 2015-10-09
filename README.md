@@ -4,4 +4,4 @@ Work in progress. Important: DO NOT USE this library yet!
 
 [![Build Status](https://travis-ci.org/thiagodp/validator.svg?branch=master)](https://travis-ci.org/thiagodp/validator)
 
-Current version: `0.3.0` (we use [Semantic Versioning](http://semver.org/)).
+Current version: `0.4.0` (we use [Semantic Versioning](http://semver.org/)).
