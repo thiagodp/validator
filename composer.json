@@ -1,9 +1,9 @@
 {
 	"name": "phputil/validator",
 	"type": "library",
-	"version": "0.1.0",
+	"version": "0.4.0",
 	"description": "Easy and powerful validator for PHP",
-	"keywords": ["validator", "validation", "check", "testing"],
+	"keywords": ["validator", "validation", "check", "testing", "input"],
 	"homepage": "http://github.com/thiagodp/validator",
 	"license": "LGPL-3",
 	"authors": [
