@@ -1,32 +1,24 @@
 {
 	"name": "phputil/validator",
 	"type": "library",
-	"version": "0.4.0",
 	"description": "Easy and powerful validator for PHP",
-	"keywords": ["validator", "validation", "check", "testing", "input"],
+	"keywords": [ "validator", "validation", "check", "testing", "input" ],
 	"homepage": "http://github.com/thiagodp/validator",
 	"license": "LGPL-3",
-	"authors": [
-		{
-			"name": "Thiago Delgado Pinto",
-			"email": "thiago-dp@bol.com.br",
-			"role" : "Developer"
-		}
-	],
+	"authors": [ { "name": "Thiago Delgado Pinto" } ],
 	"support": {
 		"issues": "https://github.com/thiagodp/validator/issues",
 		"source": "https://github.com/thiagodp/validator"
 	},
-	"minimum-stability": "dev",
 	"require": {
 		"php": ">=5.2.0"
 	},
 	"require-dev": {
-        "phpunit/phpunit": "4.*"
+        "phpunit/phpunit": ">=4.0"
     },	
 	"suggest": {
 	},
 	"autoload": {
-		"classmap": [ "lib/" ]
+		"psr-4": { "phputil\\": "lib/" }
 	}
 }
