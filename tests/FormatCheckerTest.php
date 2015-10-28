@@ -222,7 +222,103 @@ class FormatCheckerTest extends PHPUnit_Framework_TestCase {
 		$this->verify_characters( $expectations, '_tax' );
 	}
 	
-	// function test_date()
+	
+	function date_expectations( array $order, $separator ) {
+		
+		$tests = array(
+			// FAILS ------------------------------------------------------------------------------
+			array( 'value' => array( 'y' => 'a', 'm' => '1', 'd' => '1' ), 'expect' => false ),
+			array( 'value' => array( 'y' => '1', 'm' => 'a', 'd' => '1' ), 'expect' => false ),
+			array( 'value' => array( 'y' => '1234', 'm' => '13', 'd' => '1' ), 'expect' => false ),
+			array( 'value' => array( 'y' => '1234', 'm' => '12', 'd' => '32' ), 'expect' => false ),
+			array( 'value' => array( 'y' => '1234', 'm' => '02', 'd' => '31' ), 'expect' => false ),
+			// PASS -------------------------------------------------------------------------------
+			array( 'value' => array( 'y' => '1', 'm' => '1', 'd' => '1' ), 'expect' => true ),
+			array( 'value' => array( 'y' => '12', 'm' => '1', 'd' => '1' ), 'expect' => true ),
+			array( 'value' => array( 'y' => '123', 'm' => '1', 'd' => '1' ), 'expect' => true ),			
+			array( 'value' => array( 'y' => '1234', 'm' => '1', 'd' => '1' ), 'expect' => true ),
+			array( 'value' => array( 'y' => '1234', 'm' => '01', 'd' => '01' ), 'expect' => true ),
+			array( 'value' => array( 'y' => '1234', 'm' => '02', 'd' => '28' ), 'expect' => true ),
+			array( 'value' => array( 'y' => '1234', 'm' => '12', 'd' => '31' ), 'expect' => true ),
+		);
+		
+		$expectations = array();
+		
+		foreach ( $tests as $test ) {
+			$values = array();
+			foreach ( $order as $o ) {
+				$values []= $test[ 'value' ][ $o ];
+			}
+			$v = implode( $separator, $values );
+			$expectations[ $v ] = $test[ 'expect' ];
+		}
+		
+		return $expectations;
+	}
+	
+	
+	function test_date_ymd() {
+		$expectations = $this->date_expectations( array( 'y', 'm', 'd' ),  '/' );
+		$this->verify_characters( $expectations, '_date_ymd' );
+	}
+	
+	function test_date_mdy() {
+		$expectations = $this->date_expectations( array( 'm', 'd', 'y' ),  '/' );
+		$this->verify_characters( $expectations, '_date_mdy' );
+	}
+	
+	function test_date_dmy() {
+		$expectations = $this->date_expectations( array( 'd', 'm', 'y' ),  '/' );
+		$this->verify_characters( $expectations, '_date_dmy' );
+	}
+	
+	
+	function test_date_ymd_dotted() {
+		$expectations = $this->date_expectations( array( 'y', 'm', 'd' ),  '.' );
+		$this->verify_characters( $expectations, '_date_ymd_dotted' );
+	}
+	
+	function test_date_mdy_dotted() {
+		$expectations = $this->date_expectations( array( 'm', 'd', 'y' ),  '.' );
+		$this->verify_characters( $expectations, '_date_mdy_dotted' );
+	}
+	
+	function test_date_dmy_dotted() {
+		$expectations = $this->date_expectations( array( 'd', 'm', 'y' ),  '.' );
+		$this->verify_characters( $expectations, '_date_dmy_dotted' );
+	}
+	
+	
+	function test_date_ymd_dashed() {
+		$expectations = $this->date_expectations( array( 'y', 'm', 'd' ),  '-' );
+		$this->verify_characters( $expectations, '_date_ymd_dashed' );
+	}
+	
+	function test_date_mdy_dashed() {
+		$expectations = $this->date_expectations( array( 'm', 'd', 'y' ),  '-' );
+		$this->verify_characters( $expectations, '_date_mdy_dashed' );
+	}
+	
+	function test_date_dmy_dashed() {
+		$expectations = $this->date_expectations( array( 'd', 'm', 'y' ),  '-' );
+		$this->verify_characters( $expectations, '_date_dmy_dashed' );
+	}
+	
+	function test_date() {
+		$expectations = $this->date_expectations( array( 'y', 'm', 'd' ),  '-' );
+		
+		// PHP' DateTime ACCEPTS the following formats :( -----------------------------------------
+		unset( $expectations[ 'a-1-1' ] );
+		unset( $expectations[ '1-a-1' ] );
+		unset( $expectations[ '1-1-1' ] );
+		unset( $expectations[ '1234-13-1' ] );
+		unset( $expectations[ '1234-12-32' ] );
+		unset( $expectations[ '1234-02-31' ] );
+		// ----------------------------------------------------------------------------------------
+		
+		$this->verify_characters( $expectations, '_date' );
+	}
+	
 	// function test_time()
 	// function test_longtime()
 	// function test_datetime()

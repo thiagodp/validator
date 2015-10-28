@@ -67,7 +67,7 @@ class ValidatorTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( 0, mb_strpos( $problems[ Rule::REQUIRED ], 'dummy', 0, $this->vd->encoding() ) );
 	}
 	
-	function test_check__array_returns_a_message_for_each_failed_rule_for_each_field() {
+	function test_check_array_returns_a_message_for_each_failed_rule_for_each_field() {
 		$requiredMsg = '{label} is required.';
 		$minLengthMsg = 'Minimum length for {label} is {min_length}.';
 		$invalidFormatMsg = 'Invalid format for {label}.';

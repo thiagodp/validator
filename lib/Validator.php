@@ -1,22 +1,9 @@
 <?php
 namespace phputil;
 
+require_once 'Encoding.php';
 require_once 'RuleChecker.php';
 require_once 'MessageHandler.php';
-
-/**
- *  Default encoding.
- *  
- *  @author	Thiago Delgado Pinto
- */
-class Encoding {
-	const DEFAULT_ENCODING	= 'UTF-8';
-	// Some useful encodings
-	const UTF_8				= 'UTF-8';
-	const ISO_8859_1		= 'ISO-8859-1';		// PHP's default, returned by mb_internal_encoding()
-	const WIN_1251			= 'Windows-1251';
-	const ASCII				= 'ASCII';
-}
 
 
 /**
@@ -26,7 +13,7 @@ class Encoding {
  */
 class Validator {
 	
-	const LOCALE_DEFAULT = 'en'; // English
+	const DEFAULT_LOCALE = 'en'; // English
 	
 	private $locale;
 	private $encoding;
@@ -37,11 +24,11 @@ class Validator {
 	
 	
 	function __construct( $locale = null, $encoding = null ) {
-		$this->locale = isset( $locale ) ? $locale : self::LOCALE_DEFAULT;
+		$this->locale = isset( $locale ) ? $locale : self::DEFAULT_LOCALE;
 		$this->encoding = isset( $encoding ) ? $encoding : Encoding::DEFAULT_ENCODING;
 		$this->messageHandler = new MessageHandler( $this->locale );
 		$this->formatChecker = new FormatChecker( $this->encoding );
-		$this->ruleChecker = new RuleChecker( $this->formatChecker, $this->encoding );
+		$this->ruleChecker = new RuleChecker( $this->formatChecker, $this->locale, $this->encoding );
 	}
 	
 	function locale() {

@@ -1,6 +1,7 @@
 <?php
 namespace phputil;
 
+require_once 'Encoding.php';
 require_once 'FormatChecker.php';
 
 /**
@@ -39,6 +40,8 @@ class RuleException extends \Exception {}
  */
 class RuleChecker {
 	
+	const DEFAULT_LOCALE = 'en';
+	
 	static function originalMethods( RuleChecker $instance ) {
 		$array = Rule::all();
 		$methods = array();
@@ -53,10 +56,11 @@ class RuleChecker {
 	private $formatChecker;
 	private $encoding;
 	
-	function __construct( FormatChecker $formatChecker, $encoding = null ) {
+	function __construct( FormatChecker $formatChecker, $locale = null, $encoding = null ) {
 		$this->originalMethods = RuleChecker::originalMethods( $this );
 		$this->methods = array();
 		$this->formatChecker = $formatChecker;
+		$this->locale = isset( $locale ) ? $locale : self::DEFAULT_LOCALE;
 		$this->encoding = isset( $encoding ) ? $encoding : Encoding::DEFAULT_ENCODING;
 	}
 	
@@ -77,6 +81,13 @@ class RuleChecker {
 	}	
 	
 	// CONFIGURATION __________________________________________________________
+	
+	function locale( $locale = null ) { // getter/setter
+		if ( isset( $locale ) ) {
+			$this->locale = $locale;
+		}
+		return $this->locale;		
+	}
 	
 	function encoding( $encoding = null ) { // getter/setter
 		if ( isset( $encoding ) ) {
@@ -135,11 +146,32 @@ class RuleChecker {
 	}
 	
 	function format( $value, $ruleValue ) {
+		/*
 		$methods = $this->formatChecker->methods();
 		if ( ! isset( $methods[ $ruleValue ] ) ) {
 			throw new FormatException( 'Formatting rule "'. $ruleValue . '" is not available.' );
 		}
 		return call_user_func( $methods[ $ruleValue ], $value );
+		*/
+		$methods = $this->formatChecker->methods();
+		if ( is_string( $ruleValue ) ) {
+			if ( ! isset( $methods[ $ruleValue ] ) ) {
+				throw new FormatException( 'Formatting rule "'. $ruleValue . '" is not available.' );
+			}
+			return call_user_func( $methods[ $ruleValue ], $value );
+		}
+		if ( ! is_array( $ruleValue ) ) {
+			throw new FormatException( 'Formatting rule should be a string or an array.' );
+		}		
+		if ( ! isset( $ruleValue[ $this->locale ] ) ) {
+			throw new FormatException( 'Formatting rule for locale "'. $this->locale . '" is not available.' );
+		}
+		
+		$name = $ruleValue[ $this->locale ];
+		if ( ! isset( $methods[ $name ] ) ) {
+			throw new FormatException( 'Formatting rule "'. $name . '" is not available.' );
+		}
+		return call_user_func( $methods[ $name ], $value );
 	}
 	
 	// OTHER __________________________________________________________________

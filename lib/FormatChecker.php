@@ -18,7 +18,7 @@ class Format {
 	const INTEGER			= 'integer';
 	const PRICE				= 'price';				// numeric(N,2)
 	const TAX				= 'tax';				// numeric(N,3)
-	/*
+	
 	const DATE_YMD			= 'date_ymd';			// yyyy/dd/mm
 	const DATE_MDY			= 'date_mdy';			// mm/dd/yyyy
 	const DATE_DMY			= 'date_dmy';			// dd/mm/yyyy
@@ -26,12 +26,19 @@ class Format {
 	const DATE_YMD_DOTTED	= 'date_ymd_dotted';	// yyyy.dd.mm
 	const DATE_MDY_DOTTED	= 'date_mdy_dotted';	// mm.dd.yyyy
 	const DATE_DMY_DOTTED	= 'date_dmy_dotted';	// dd.mm.yyyy
-	*/
-	const DATE				= 'date';				// mm/dd/yyyy
+	
+	const DATE_YMD_DASHED	= 'date_ymd_dashed';	// yyyy-dd-mm
+	const DATE_MDY_DASHED	= 'date_mdy_dashed';	// mm-dd-yyyy
+	const DATE_DMY_DASHED	= 'date_dmy_dashed';	// dd-mm-yyyy	
+	
+	const DATE				= 'date';				// dd/mm/yyyy (the most popular, according to https://en.wikipedia.org/wiki/Date_format_by_country)
+	
 	const TIME				= 'time';				// hh:mm
 	const SHORT_TIME		= 'longtime';			// hh:mm:ss
-	const DATE_TIME			= 'datetime';			// mm/dd/yyyy hh:mm
-	const LONG_DATE_TIME	= 'longdatetime';		// mm/dd/yyyy hh:mm:ss	
+	
+	const DATE_TIME			= 'datetime';			// dd/mm/yyyy hh:mm
+	const LONG_DATE_TIME	= 'longdatetime';		// mm/dd/yyyy hh:mm:ss
+	
 	const EMAIL				= 'email';
 	const HTTP_URL			= 'http';				// http://... or https://...
 	const URL				= 'url';				// any://...
@@ -218,6 +225,51 @@ class FormatChecker {
 		return $this->matches( '^[[:digit:]]*[' . $separators . ']{0,1}[][[:digit:]]{1,3}$', $value );
 	}
 	
+	function _date_ymd( $value ) {
+		if ( empty( $value ) ) { return true; }		
+		return $this->matchesDateRegEx( array( 'y', 'm', 'd' ), '/', $value );
+	}
+	
+	function _date_mdy( $value ) {
+		if ( empty( $value ) ) { return true; }
+		return $this->matchesDateRegEx( array( 'm', 'd', 'y' ), '/', $value );
+	}
+	
+	function _date_dmy( $value ) {
+		if ( empty( $value ) ) { return true; }
+		return $this->matchesDateRegEx( array( 'd', 'm', 'y' ), '/', $value );
+	}
+	
+	function _date_ymd_dotted( $value ) {
+		if ( empty( $value ) ) { return true; }
+		return $this->matchesDateRegEx( array( 'y', 'm', 'd' ), '.', $value );
+	}
+	
+	function _date_mdy_dotted( $value ) {
+		if ( empty( $value ) ) { return true; }
+		return $this->matchesDateRegEx( array( 'm', 'd', 'y' ), '.', $value );
+	}
+	
+	function _date_dmy_dotted( $value ) {
+		if ( empty( $value ) ) { return true; }
+		return $this->matchesDateRegEx( array( 'd', 'm', 'y' ), '.', $value );
+	}
+	
+	function _date_ymd_dashed( $value ) {
+		if ( empty( $value ) ) { return true; }
+		return $this->matchesDateRegEx( array( 'y', 'm', 'd' ), '-', $value );
+	}
+	
+	function _date_mdy_dashed( $value ) {
+		if ( empty( $value ) ) { return true; }
+		return $this->matchesDateRegEx( array( 'm', 'd', 'y' ), '-', $value );
+	}
+	
+	function _date_dmy_dashed( $value ) {
+		if ( empty( $value ) ) { return true; }
+		return $this->matchesDateRegEx( array( 'd', 'm', 'y' ), '-', $value );
+	}
+	
 	function _date( $value ) {
 		return $this->checkDateTime( $this->dateFormat, $value );
 	}
@@ -287,7 +339,35 @@ class FormatChecker {
 		} catch ( \Exception $e ) {
 			return false;
 		}
-	}	
+	}
+	
+	private function dateRegEx( array $order, $separator ) {
+		$expressions = array(
+			'y' => '[0-9]{1,4}',
+			'm' => '(0?[1-9]|1[012])',
+			'd' => '(0?[1-9]|[12][0-9]|3[01])'
+			);
+		$pieces = array();
+		foreach ( $order as $o ) {
+			if ( isset( $expressions[ $o ] ) ) {
+				$pieces []= $expressions[ $o ];
+			}
+		}
+		return '^'. implode( $separator, $pieces ) .'$';
+	}
+	
+	private function matchesDateRegEx( array $order, $separator, $value ) {
+		$regex = $this->dateRegEx( $order, "\\" . $separator );
+		if ( ! $this->matches( $regex, $value ) ) {
+			return false;
+		}
+		$pieces = explode( $separator, $value );
+		$date = array();
+		foreach ( $order as $k => $v ) {
+			$date[ $v ] = $pieces[ $k ];
+		}
+		return checkdate( $date[ 'm' ], $date[ 'd' ], $date[ 'y' ] );
+	}
 
 }
 
