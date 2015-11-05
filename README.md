@@ -59,6 +59,7 @@ _** Not fully tested, and it will change soon._
 
 ### More
 
+- [x] Support UTF-8 and other common formats (ISO-8859-1, Windows-1251, ASCII, etc.)
 - [x] Error messages can be specified by locale.
 - [x] Error messages can be specified at once, allowing, for example, reading them from a JSON file.
 - [x] Formats can be specified by locale.
@@ -67,4 +68,8 @@ _** Not fully tested, and it will change soon._
 - [x] Rules can be specified without having to extend any class.
 - [x] Classes use [fluent interface](https://en.wikipedia.org/wiki/Fluent_interface) (you type less).
 - [ ] Builder classes available.
- 
+- [x] Can check a single value.
+- [x] Can check a value array.
+- [ ] Can check an object.
+
+
