@@ -1,7 +1,7 @@
 # validator
 
-Work in progress. Important: DO NOT USE this library yet!
+Easy and powerful validation livrary for PHP.
 
 [![Build Status](https://travis-ci.org/thiagodp/validator.svg?branch=master)](https://travis-ci.org/thiagodp/validator)
 
-Current version: `0.4.0` (we use [Semantic Versioning](http://semver.org/)).
+Current [version](http://semver.org/): `0.4.0` (not production-ready, but usable)
