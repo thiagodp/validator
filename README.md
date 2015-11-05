@@ -59,7 +59,7 @@ _** Not fully tested, and it will change soon._
 
 ### Message Replacements
 
-- [x] **all rules** (i.e.: `{min_length}`, `{max}`, etc.)
+- [x] **any rule** (i.e.: `{min_length}`, `{max}`, etc.): shows the rule value.
 - [x] `{label}` shows the defined replacement for array keys or object field names.
 - [x] `{value}` shows the value.
 
