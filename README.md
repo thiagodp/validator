@@ -12,6 +12,8 @@ Current [version](http://semver.org/): `0.4.0` (_not production-ready yet, but u
 composer require phputil/validator
 ```
 
+## Features
+
 ### Available Rules
 
 - [x] `required`
@@ -83,3 +85,7 @@ _** Not fully tested, and it will change soon._
 - [x] Can check a single value.
 - [x] Can check a value array.
 - [ ] Can check an object.
+
+## Examples
+
+To appear. In the mean time, you may [see the tests](https://github.com/thiagodp/validator/tree/master/tests).
