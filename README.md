@@ -6,6 +6,12 @@ Easy and powerful validation livrary for PHP.
 
 Current [version](http://semver.org/): `0.4.0` (_not production-ready yet, but usable_)
 
+## Installation
+
+```command
+composer require phputil/validator
+```
+
 ### Available Rules
 
 - [x] `required`
