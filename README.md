@@ -96,8 +96,10 @@ _** Not fully tested, and it will change soon._
 
 ## Examples
 
-[See all](https://github.com/thiagodp/validator/tree/master/examples):
+[See all](https://github.com/thiagodp/validator/tree/master/examples)
 
 [ex1.php](https://github.com/thiagodp/validator/tree/master/examples/ex1.php) - Validating values
+
 [ex2.php](https://github.com/thiagodp/validator/tree/master/examples/ex2.php) - Validating arrays
+
 [ex3.php](https://github.com/thiagodp/validator/tree/master/examples/ex3.php) - Validating objects
