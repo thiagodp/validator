@@ -17,12 +17,10 @@ $rules = array(
 $age = 'hi'; // I know, this is a strange value
 
 // Will return the validation message for each hurt rule
-$problems = $vd->check( $age, $rules );	
-// "Hi" hurt only the FORMAT rule
+$problems = $vd->check( $age, $rules );
 var_dump( $problems ); // array( 'format' => '' )
 
 $vd->setMessage( Rule::FORMAT, 'It must be numeric!' );
-
 $problems = $vd->check( $age, $rules );
 var_dump( $problems ); // array( 'format' => 'It must be numeric!' )
 
@@ -32,12 +30,13 @@ $vd->setMessage( Rule::FORMAT, '{label} must be numeric!' );
 $problems = $vd->check( $age, $rules, 'Age' );
 var_dump( $problems ); // array( 'format' => 'Age must be numeric!' )
 
-// Not lets add another rule
+// Now lets add another rule
 $rules[ Rule::MIN_VALUE ] = 18;
 $age = 17;
 $problems = $vd->check( $age, $rules, 'Age' );
 var_dump( $problems ); // array( 'min' => '' ) <<- No defined message for MIN_VALUE
-// Now lets define a message
+
+// Lets define a message
 $vd->setMessage( Rule::MIN_VALUE, '{label} must be >= {min_value}.' );
 $problems = $vd->check( $age, $rules, 'Age' );
 var_dump( $problems ); // array( 'min' => 'Age must be >= 18.' )

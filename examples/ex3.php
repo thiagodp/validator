@@ -51,3 +51,4 @@ $rules[ 'bar' ][ Option::LABEL ] = 'My Bar';
 $problems = $vd->checkObject( $foo, $rules );
 var_dump( $problems );
 // array( 'bar' => array( 'max_length' => 'My Bar must have at most 2 characters.' ) )
+?>
