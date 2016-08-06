@@ -1,9 +1,6 @@
 <?php
 namespace phputil;
 
-require_once 'Encoding.php';
-require_once 'FormatChecker.php';
-
 /**
  *  Default rules.
  *  

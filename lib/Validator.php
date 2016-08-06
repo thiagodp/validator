@@ -1,10 +1,6 @@
 <?php
 namespace phputil;
 
-require_once 'Encoding.php';
-require_once 'RuleChecker.php';
-require_once 'MessageHandler.php';
-
 /**
  *  Easy and powerful validator for PHP.
  *  
@@ -249,6 +245,32 @@ class Validator {
 		return $problems;
 	}
 	
+
+	/**
+	 *  Checks an object, according to an array of rules, and return
+	 *  an array of problems.
+	 *  
+	 *  @param object $object			Object of stdClass or another class.
+	 *  @param array $attrToRulesMap	Array of attribute => rule => value.
+	 *  @param string $getterPrefix		(Optional) Prefix of getter methods.
+	 *  								Defaults to 'get'. It should be
+	 *  								ignored for an object of stdClass.
+	 *  @param bool $useCamelCase		Whether it should use camelCase for
+	 *  								accessing object's methods. It should
+	 *  								be ignored for an object of stdClass.
+	 *  
+	 *  @return array					Array of attribute => rule => problem message.
+	 */	
+	function checkObject(
+			$object,
+			array $attrToRulesMap,
+			$getterPrefix = 'get',
+			$useCamelCase = true
+			) {
+		$array = $this->toArray( $object );
+		return $this->checkArray( $array, $attrToRulesMap );
+	}		
+	
 	// UTIL
 	
 	function formatChecker() {
@@ -261,7 +283,17 @@ class Validator {
 	
 	function messageHandler() {
 		return $this->messageHandler;
-	}	
+	}
+	
+	// PRIVATE
+	
+	/** @return array */
+	private function toArray( $obj ) {
+		if ( is_object( $obj ) && 'stdClass' != get_class( $obj ) ) {
+			return RTTI::getAttributes( $obj, RTTI::allFlags() );
+		}
+		return (array) $obj;
+	}
 }
 
 ?>

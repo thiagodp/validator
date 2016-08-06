@@ -11,7 +11,8 @@
 		"source": "https://github.com/thiagodp/validator"
 	},
 	"require": {
-		"php": ">=5.2.0"
+		"php": ">=5.2.0",
+		"phputil/rtti": "^1.0"
 	},
 	"require-dev": {
         "phpunit/phpunit": ">=4.0"

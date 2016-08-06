@@ -1,13 +1,33 @@
 <?php
 namespace phputil\tests;
 
-require_once 'lib/Validator.php'; // phpunit will be executed from the project root
+require_once 'vendor/autoload.php';
 
 use PHPUnit_Framework_TestCase;
+
+use phputil\Encoding;
 use phputil\Format;
 use phputil\Rule;
 use phputil\Option;
 use phputil\Validator;
+
+/**
+ *  A dummy class.
+ */
+class ADummy {
+	
+	private $foo;
+	public $bar;
+	
+	function __construct( $foo, $bar ) {
+		$this->foo = $foo;
+		$this->bar = $bar;
+	}
+	
+	function getFoo() {
+		return $this->foo;
+	}
+}
 
 /**
  * Tests Validator.
@@ -137,6 +157,32 @@ class ValidatorTest extends PHPUnit_Framework_TestCase {
 		$this->assertNotFalse( mb_strpos( $problems[ $field1 ][ Rule::MIN_LENGTH ], $label1, 0, $this->vd->encoding() ) );		
 		$this->assertNotFalse( mb_strpos( $problems[ $field2 ][ Rule::MAX_LENGTH ], $label2, 0, $this->vd->encoding() ) );		
 	}
+	
+	
+	function test_check_object_of_stdclass_works_like_for_arrays() {
+		$obj = new \stdClass;
+		$obj->foo = 'foo';
+		$problems = $this->vd->checkObject(
+			$obj,
+			array( 'foo' => array( Rule::MAX_LENGTH => 2 ) )
+			);
+		$this->assertNotFalse( isset( $problems[ 'foo' ][ Rule::MAX_LENGTH ] ) );
+	}
+	
+	function test_check_object_of_some_class_works_like_for_arrays() {
+		$obj = new ADummy( 'foo', 'bar' );
+		$obj->bar = '';
+		$problems = $this->vd->checkObject(
+			$obj,
+			array(
+				'foo' => array( Rule::MAX_LENGTH => 2 ),
+				'bar' => array( Rule::REQUIRED => true )
+			)
+			);
+		$this->assertNotFalse( isset( $problems[ 'foo' ][ Rule::MAX_LENGTH ] ) );
+		$this->assertNotFalse( isset( $problems[ 'bar' ][ Rule::REQUIRED ] ) );
+	}	
+	
 }
 
 ?>
