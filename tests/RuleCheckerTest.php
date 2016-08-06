@@ -34,14 +34,14 @@ class RuleCheckerTest extends PHPUnit_Framework_TestCase {
 	
 	function test_can_add_a_method() {
 		$dummy = new Dummy();
-		$this->rc->add( 'myRule', array( $dummy, 'doSomething' ) );
+		$this->rc->set( 'myRule', array( $dummy, 'doSomething' ) );
 		$exists = isset( $this->rc->methods()[ 'myRule' ] );
 		$this->assertTrue( $exists );
 	}
 	
 	function test_can_remove_a_method() {
 		$dummy = new Dummy();
-		$this->rc->add( 'myRule', array( $dummy, 'doSomething' ) );
+		$this->rc->set( 'myRule', array( $dummy, 'doSomething' ) );
 		$this->rc->remove( 'myRule' );
 		$exists = isset( $this->rc->methods()[ 'myRule' ] );
 		$this->assertFalse( $exists );
@@ -106,45 +106,45 @@ class RuleCheckerTest extends PHPUnit_Framework_TestCase {
 	// Min
 	
 	function test_min_returns_false_when_value_is_lower() {
-		$this->assertFalse( $this->rc->min( 9, 10 ) );
+		$this->assertFalse( $this->rc->min_value( 9, 10 ) );
 	}
 	
 	function test_min_returns_true_when_value_is_equal() {
-		$this->assertTrue( $this->rc->min( 10, 10 ) );
+		$this->assertTrue( $this->rc->min_value( 10, 10 ) );
 	}
 	
 	function test_min_returns_true_when_value_is_greater() {
-		$this->assertTrue( $this->rc->min( 11, 10 ) );
+		$this->assertTrue( $this->rc->min_value( 11, 10 ) );
 	}
 	
 	// Max
 	
 	function test_max_returns_false_when_value_is_greater() {
-		$this->assertFalse( $this->rc->max( 10, 9 ) );
+		$this->assertFalse( $this->rc->max_value( 10, 9 ) );
 	}
 	
 	function test_max_returns_true_when_value_is_equal() {
-		$this->assertTrue( $this->rc->max( 10, 10 ) );
+		$this->assertTrue( $this->rc->max_value( 10, 10 ) );
 	}
 	
 	function test_max_returns_true_when_value_is_lower() {
-		$this->assertTrue( $this->rc->max( 9, 10 ) );
+		$this->assertTrue( $this->rc->max_value( 9, 10 ) );
 	}
 	
 	// Range
 	
 	function test_range_returns_false_when_value_is_out_of_range() {
-		$this->assertFalse( $this->rc->range( 9, array( 10, 20 ) ) );
-		$this->assertFalse( $this->rc->range( 21, array( 10, 20 ) ) );
+		$this->assertFalse( $this->rc->value_range( 9, array( 10, 20 ) ) );
+		$this->assertFalse( $this->rc->value_range( 21, array( 10, 20 ) ) );
 	}
 	
 	function test_range_returns_true_when_value_is_in_the_boundaries() {
-		$this->assertTrue( $this->rc->range( 10, array( 10, 20 ) ) );
-		$this->assertTrue( $this->rc->range( 20, array( 10, 20 ) ) );
+		$this->assertTrue( $this->rc->value_range( 10, array( 10, 20 ) ) );
+		$this->assertTrue( $this->rc->value_range( 20, array( 10, 20 ) ) );
 	}
 	
 	function test_range_returns_true_when_value_is_inside_range() {
-		$this->assertTrue( $this->rc->range( 15, array( 10, 20 ) ) );
+		$this->assertTrue( $this->rc->value_range( 15, array( 10, 20 ) ) );
 	}
 	
 	// RegEx

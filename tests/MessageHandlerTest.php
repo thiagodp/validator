@@ -23,26 +23,26 @@ class MessageHandlerTest extends PHPUnit_Framework_TestCase {
 	function test_can_add_messages_to_an_empty_locale() {
 		$m = new MessageHandler( '' );
 		$message = 'value';
-		$m->add( 'key', $message );
+		$m->set( 'key', $message );
 		$this->assertEquals( $message, $m->ruleMessage( 'key' ) );
 	}
 	
 	function test_can_add_messages_to_a_defined_locale() {
 		$message = 'value';
-		$this->mh->add( 'key', $message );
+		$this->mh->set( 'key', $message );
 		$this->assertEquals( $message, $this->mh->ruleMessage( 'key' ) );
 	}
 	
 	function test_can_get_messages_from_a_locale() {
 		$message = 'value';
-		$this->mh->add( 'key', $message );
+		$this->mh->set( 'key', $message );
 		$expected = array( 'key' => $message );
 		$this->assertEquals( $expected, $this->mh->messagesFromLocale() );
 	}
 	
 	function test_can_get_all_messages() {
 		$message = 'value';
-		$this->mh->add( 'key', $message );
+		$this->mh->set( 'key', $message );
 		$expected = array( $this->locale => array( 'key' => $message ) );
 		$this->assertEquals( $expected, $this->mh->messages() );
 	}
@@ -56,7 +56,7 @@ class MessageHandlerTest extends PHPUnit_Framework_TestCase {
 	function test_format_allows_to_use_the_value() {
 		$value = 'hello';
 		$message = 'value is {value}';
-		$this->mh->add( 'key', $message );
+		$this->mh->set( 'key', $message );
 		
 		$expected = "value is $value";
 		$got = $this->mh->format( $value, 'key', array() );
@@ -67,7 +67,7 @@ class MessageHandlerTest extends PHPUnit_Framework_TestCase {
 	function test_format_allows_to_use_the_value_more_than_once() {
 		$value = 'hello';
 		$message = 'value is {value} {value} {value}';
-		$this->mh->add( 'key', $message );
+		$this->mh->set( 'key', $message );
 		
 		$expected = "value is $value $value $value";
 		$got = $this->mh->format( $value, 'key', array() );
@@ -81,7 +81,7 @@ class MessageHandlerTest extends PHPUnit_Framework_TestCase {
 		$message = '{label} is {value}';
 		
 		$rule = 'required';
-		$this->mh->add( $rule, $message );
+		$this->mh->set( $rule, $message );
 		
 		$rules = array( 'label' => $label ); // as string
 		$ruleToVerify = $rule;
@@ -98,7 +98,7 @@ class MessageHandlerTest extends PHPUnit_Framework_TestCase {
 		$message = '{label} is {value}';
 		
 		$rule = 'required';
-		$this->mh->add( $rule, $message );
+		$this->mh->set( $rule, $message );
 		
 		$rules = array( 'label' => array( $this->locale => $label ) ); // array with locale
 		$ruleToVerify = $rule;
@@ -109,18 +109,18 @@ class MessageHandlerTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $expected, $got );
 	}
 	
-	function test_format_returns_an_empty_message_for_a_label_as_array_without_a_locale() {
+	function test_format_replaces_the_label_even_if_it_receives_an_array_without_a_locale() {
 		$value = 'Bob';
 		$label = 'Name';
 		$message = '{label} is {value}';
 		
 		$rule = 'required';
-		$this->mh->add( $rule, $message );
+		$this->mh->set( $rule, $message );
 		
 		$rules = array( 'label' => array( $label ) ); // array WITHOUT locale !
 		$ruleToVerify = $rule;
 		
-		$expected = " is $value";
+		$expected = "$label is $value";
 		$got = $this->mh->format( $value, $ruleToVerify, $rules );
 		
 		$this->assertEquals( $expected, $got );
@@ -131,7 +131,7 @@ class MessageHandlerTest extends PHPUnit_Framework_TestCase {
 		$label = 'Name';
 		
 		$message = '{label} is {value}, required is {required}, min_value is {min_value}';
-		$this->mh->add( 'required', $message );
+		$this->mh->set( 'required', $message );
 		
 		$rules = array(
 			'label' => $label,

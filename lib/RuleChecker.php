@@ -12,9 +12,9 @@ class Rule {
 	const MIN_LENGTH	= 'min_length';
 	const MAX_LENGTH	= 'max_length';
 	const LENGTH_RANGE	= 'length_range';
-	const MIN_VALUE		= 'min';
-	const MAX_VALUE		= 'max';
-	const RANGE			= 'range';
+	const MIN_VALUE		= 'min_value';
+	const MAX_VALUE		= 'max_value';
+	const VALUE_RANGE	= 'value_range';
 	const REGEX			= 'regex';
 	const FORMAT		= 'format';
 	
@@ -63,7 +63,7 @@ class RuleChecker {
 	
 	// METHOD HANDLING
 	
-	function add( $name, $callback ) {
+	function set( $name, $callback ) {
 		$this->methods[ $name ] = $callback;
 		return $this;
 	}
@@ -117,25 +117,26 @@ class RuleChecker {
 		$array = $this->rangeValues( $ruleValue );
 		$min = $array[ 0 ];
 		$max = $array[ 1 ];
-		return $this->min_length( $value, $min ) && $this->max_length( $value, $max );
+		return $this->min_length( $value, $min )
+			&& $this->max_length( $value, $max );
 	}
 	
-	function min( $value, $ruleValue ) {
+	function min_value( $value, $ruleValue ) {
 		return $value >= $ruleValue;
 	}
 	
-	function max( $value, $ruleValue ) {
+	function max_value( $value, $ruleValue ) {
 		return $value <= $ruleValue;
 	}
 	
-	function range( $value, $ruleValue ) {
+	function value_range( $value, $ruleValue ) {
 		if ( ! is_array( $ruleValue ) ) {
 			return $value === $ruleValue;
 		}
 		$array = $this->rangeValues( $ruleValue );
 		$min = $array[ 0 ];
 		$max = $array[ 1 ];
-		return $this->min( $value, $min ) && $this->max( $value, $max );		
+		return $this->min_value( $value, $min ) && $this->max_value( $value, $max );		
 	}
 	
 	function regex( $value, $ruleValue ) {

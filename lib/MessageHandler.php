@@ -35,7 +35,7 @@ class MessageHandler {
 		return $this->locale;
 	}
 	
-	function add( $rule, $message, $locale = null ) {
+	function set( $rule, $message, $locale = null ) {
 		$loc = isset( $locale ) ? $locale : $this->locale();
 		if ( ! isset( $this->messages[ $loc ] ) ) {
 			$this->messages[ $loc ] = array();
@@ -70,7 +70,13 @@ class MessageHandler {
 		return isset( $locMessages[ $ruleName ] ) ? $locMessages[ $ruleName ] : '';
 	}
 	
-	function format( $value, $ruleName, array $ruleValuesMap, $locale = null ) {
+	function format(
+			$value
+			, $ruleName
+			, array $rules
+			, $locale = null
+			, $label = null
+			) {
 		$matches = array();
 		$msg = $this->ruleMessage( $ruleName, $locale );
 		if ( '' === $msg ) { return $msg; }
@@ -78,40 +84,91 @@ class MessageHandler {
 		if ( ! $hasFields ) {
 			return $msg;
 		}
-		$rules = $ruleValuesMap; // copy
-		$rules[ self::VALUE ] = $value; // add value, so that {value} is possible.
-		if ( isset( $rules[ Option::LABEL ] )
-			&& is_array( $rules[ Option::LABEL ] )
-			&& count( $rules[ Option::LABEL ] ) > 0
-			) {
+		// Adds "value", so that {value} is possible.
+		$rules[ self::VALUE ] = $value;
+		
+		$hasOptionLabel = isset( $rules[ Option::LABEL ] );
+		
+		$canBeALabel = $hasOptionLabel && $this->canBeALabel( $rules[ Option::LABEL ] );	
 			
-			$localeArray = array();
-			if ( isset( $locale ) ) { // First the given locale
-				$localeArray []= $locale;
-			}
-			$localeArray []= $this->locale(); // Then the default locale
+		if ( $canBeALabel ) {
 			
-			$label = '';
-			foreach ( $localeArray as $loc ) {
-				if ( isset( $rules[ Option::LABEL ][ $loc ] ) ) {
-					$label = $rules[ Option::LABEL ][ $loc ];
-					break;
+			if ( is_array( $rules[ Option::LABEL ] ) ) {
+				
+				$localeArray = array();
+				if ( isset( $locale ) ) { // First the given locale
+					$localeArray []= $locale;
 				}
-			}			
-			// overwrites			
-			$rules[ Option::LABEL ] = $label;
+				$localeArray []= $this->locale(); // Then the default locale
+				
+				$value = $rules[ Option::LABEL ];
+				$lbl = '';
+				foreach ( $localeArray as $loc ) {
+					if ( isset( $value[ $loc ] ) ) {
+						$lbl = $value[ $loc ];
+						break;
+					}
+				}
+				
+				// Replaces the rule with the correct label for the locale
+				if ( $lbl != '' ) {
+					$rules[ Option::LABEL ] = $lbl;
+				} else if ( isset( $value[ 0 ] ) ) { // without locale
+					$rules[ Option::LABEL ] = $value[ 0 ];
+				}					
+			} // else - not needed, it is a string
+
+		} else if ( $label !== null ) {
+			$rules[ Option::LABEL ] = $label; // Adds "label"
+		} else if ( $hasOptionLabel ) {
+			unset( $rules[ Option::LABEL ] );
 		}
+		//print $msg . PHP_EOL;
 		//print_r( $matches ); die();
+		
+		// When a "length_range" rule is found, includes the parsing
+		// of "min_length" and "max_length". When a "value_range" is
+		// found, includes the parsing of "min_value" and "max_value".
+		// The parsing is included by including the rule.
+		$ranges = array(
+			'length_range' => array( 'min_length', 'max_length' )
+			, 'value_range' => array( 'min_value', 'max_value' )
+			);
+		foreach ( $ranges as $rKey => $rValue ) {
+			if ( ! isset( $rules[ $rKey ] ) ) { continue; }
+			if ( ! is_array( $rValue ) || count( $rValue ) !== 2 ) { continue; }
+			foreach ( $rValue as $rValueKey => $rValueValue ) {
+				if ( isset( $rules[ $rValueValue ] ) ) { continue; }
+				// Includes a rule using the respective value for min or max
+				$rules[ $rValueValue ] = $rules[ $rKey ][ $rValueKey ];
+			}
+		}
+		
+		// Replaces the fields in the messages
 		foreach ( $matches[ 0 ] as $m ) {
-			$key = str_replace( array( '{', '}' ), '', $m );
+			$v = is_array( $m ) ? $m[ 0 ] : $m;
+			$key = str_replace( array( '{', '}' ), '', $v );
 			if ( isset( $rules[ $key ] ) ) {
 				$value = $rules[ $key ];
-				$msg = str_replace( $m, $value, $msg );
+				if ( is_array( $value ) ) { // it is a range
+					$v0 = isset( $value[ 0 ] ) ? $value[ 0 ] : '';
+					$v1 = isset( $value[ 1 ] ) ? $value[ 1 ] : '';
+					$value = $v0 . '-' . $v1;
+				}
+				$msg = str_replace( $v, $value, $msg );
 			}
 		}
+		
 		return $msg;
 	}
 	
+	
+	// PRIVATE
+	
+	private function canBeALabel( $value ) {
+		return ( is_array( $value ) && count( $value ) > 0 )
+			|| ( is_string( $value ) && mb_strlen( $value ) > 0 );
+	}
 }
 
 ?>

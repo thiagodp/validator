@@ -55,7 +55,7 @@ class Validator {
 	// MESSAGE
 	
 	/**
-	 *  Adds a message to be returned when a value hurts the given rule.
+	 *  Sets a message to be returned when a value hurts the given rule.
 	 *  
 	 *  @param string $rule		Rule name.
 	 *  @param string $message	Problem message, that is, the message that
@@ -64,8 +64,8 @@ class Validator {
 	 *  
 	 *  @return Validator
 	 */
-	function addMessage( $rule, $message, $locale = null ) {
-		$this->messageHandler->add( $rule, $message, $locale );
+	function setMessage( $rule, $message, $locale = null ) {
+		$this->messageHandler->set( $rule, $message, $locale );
 		return $this;
 	}
 	
@@ -129,7 +129,7 @@ class Validator {
 	// RULE
 	
 	/**
-	 *  Adds a rule.
+	 *  Sets a rule.
 	 *  
 	 *  @param string $name			Name for the rule.
 	 *  @param callable	$callback	Function or method to be called,
@@ -137,8 +137,8 @@ class Validator {
 	 *  
 	 *	@return Validator
 	 */
-	function addRule( $name, $callback ) {
-		$this->ruleChecker->add( $name, $callback );
+	function setRule( $name, $callback ) {
+		$this->ruleChecker->set( $name, $callback );
 		return $this;
 	}
 	
@@ -166,7 +166,7 @@ class Validator {
 	// FORMAT
 	
 	/**
-	 *  Adds a format.
+	 *  Sets a format.
 	 *  
 	 *  @param string $name			Name for the format.
 	 *  @param callable	$callback	Function or method to be called,
@@ -174,8 +174,8 @@ class Validator {
 	 *  
 	 *	@return Validator
 	 */	
-	function addFormat( $name, $callback ) {
-		$this->formatChecker->add( $name, $callback );
+	function setFormat( $name, $callback ) {
+		$this->formatChecker->set( $name, $callback );
 		return $this;
 	}
 	
@@ -206,19 +206,21 @@ class Validator {
 	 *  Checks an array of values, according to an array of rules, and return
 	 *  an array of problems.
 	 *  
-	 *  @param mixed $value	Value to be checked.
-	 *  @param array $rules	Array of rule => value.
+	 *  @param mixed $value		Value to be checked.
+	 *  @param array $rules		Array of rule => value.
+	 *  @param string $label	Label of the verified value (e.g. "age").
 	 *  
 	 *  @return array		Array of rule => problem message.
 	 */	
-	function check( $value, array $rules ) {
+	function check( $value, array $rules, $label = null ) {
 		$allRules = $this->rules();
 		$problems = array();
 		foreach ( $rules as $k => $v ) {
 			if ( isset( $allRules[ $k ] ) ) {
 				$result = call_user_func( $allRules[ $k ], $value, $rules[ $k ] );
 				if ( ! $result ) {
-					$problems[ $k ] = $this->messageHandler->format( $value, $k, $rules );
+					$problems[ $k ] = $this->messageHandler->format(
+						$value, $k, $rules, $this->locale(), $label );
 					//$problems[ $k ] = isset( $this->messages[ $k ] ) ? $this->messages[ $k ] : '';
 				}
 			}
@@ -240,7 +242,11 @@ class Validator {
 		$problems = array();
 		foreach ( $fieldToRulesMap as $field => $rules ) {
 			$value = array_key_exists( $field, $valuesMap ) ? $valuesMap[ $field ] : '';
-			$problems[ $field ] = $this->check( $value, $rules );
+			$label = isset( $rules[ Option::LABEL ] ) ? $rules[ Option::LABEL ] : $field;
+			$p = $this->check( $value, $rules, $label );
+			if ( ! empty( $p ) ) {
+				$problems[ $field ] = $p;
+			}
 		}
 		return $problems;
 	}

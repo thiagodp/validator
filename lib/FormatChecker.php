@@ -100,7 +100,7 @@ class FormatChecker {
 	
 	// METHOD HANDLING
 	
-	function add( $name, $callback ) {
+	function set( $name, $callback ) {
 		$this->methods[ $name ] = $callback;
 		return $this;
 	}
