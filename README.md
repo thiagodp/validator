@@ -191,6 +191,8 @@ var_dump( $problems ); // "The Name must have from 5 to 60 characters."
 ### Validating objects:
 
 ```php
+$vd = new Validator();
+
 // Validating an object of stdClass
 $obj = new \stdClass;
 $obj->foo = 'foo';
@@ -200,7 +202,7 @@ $rules = array( 'foo' => array( Rule::MAX_LENGTH => 2 ) );
 // checkObject works just like checkArray()
 $problems = $vd->checkObject( $obj, $rules );
 	
-var_dump( $problems );
+var_dump( $problems ); // array( 'foo' => array( 'max_length' => '' ) )
 
 class Foo {
 	private $bar;
@@ -213,11 +215,18 @@ class Foo {
 }
 
 $foo = new Foo( 'hello' );
-
 $rules = array( 'bar' => array( Rule::MAX_LENGTH => 2 ) );
-
 // same way
-$problems = $vd->checkObject( $obj, $rules );
+$problems = $vd->checkObject( $foo, $rules );
+var_dump( $problems ); // array( 'bar' => array( 'max_length' => '' ) )
 
+$vd->setMessage( Rule::MAX_LENGTH, '{label} must have at most {max_length} characters.' );
+$problems = $vd->checkObject( $foo, $rules );
 var_dump( $problems );
+// array( 'bar' => array( 'max_length' => 'bar must have at most 2 characters.' ) )
+
+$rules[ 'bar' ][ Option::LABEL ] = 'My Bar';
+$problems = $vd->checkObject( $foo, $rules );
+var_dump( $problems );
+// array( 'bar' => array( 'max_length' => 'My Bar must have at most 2 characters.' ) )
 ```
