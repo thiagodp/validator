@@ -73,6 +73,8 @@ _** Not fully tested, and it will change soon._
 ### Message Replacements
 
 - [x] **any rule** (i.e.: `{min_length}`, `{max_value}`, etc.): shows the rule value.
+- [x] `{min_value}` and `{max_value}` can be used when `{value_range}` is defined.
+- [x] `{min_length}` and `{max_length}` can be used when `{length_range}` is defined.
 - [x] `{label}` shows the defined replacement for array keys or object field names.
 - [x] `{value}` shows the value.
 
