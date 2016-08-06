@@ -1,7 +1,10 @@
 <?php
-namespace phputil;
-
 require '../vendor/autoload.php';
+
+use \phputil\Validator;
+use \phputil\Rule;
+use \phputil\Option;
+use \phputil\Format;
 
 // Example 1
 
@@ -33,10 +36,9 @@ var_dump( $problems ); // array( 'format' => 'Age must be numeric!' )
 $rules[ Rule::MIN_VALUE ] = 18;
 $age = 17;
 $problems = $vd->check( $age, $rules, 'Age' );
-var_dump( $problems ); // array( 'min' => '' ) <<- No message for MIN_VALUE, remember?
+var_dump( $problems ); // array( 'min' => '' ) <<- No defined message for MIN_VALUE
 // Now lets define a message
 $vd->setMessage( Rule::MIN_VALUE, '{label} must be >= {min_value}.' );
 $problems = $vd->check( $age, $rules, 'Age' );
 var_dump( $problems ); // array( 'min' => 'Age must be >= 18.' )
-
 ?>

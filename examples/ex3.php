@@ -1,22 +1,30 @@
 <?php
-namespace phputil;
-
 require '../vendor/autoload.php';
 
-// Example 3
+use \phputil\Validator;
+use \phputil\Rule;
+use \phputil\Option;
+use \phputil\Format;
+
+// Example 2
+
+//
+// Validating an object of stdClass (dynamic object)
+//
 
 $vd = new Validator();
 
-// Validating an object of stdClass
 $obj = new \stdClass;
 $obj->foo = 'foo';
 
 $rules = array( 'foo' => array( Rule::MAX_LENGTH => 2 ) );
-
-// checkObject works just like checkArray()
 $problems = $vd->checkObject( $obj, $rules );
 	
 var_dump( $problems ); // array( 'foo' => array( 'max_length' => '' ) )
+
+//
+// Validating a object of a class
+//
 
 class Foo {
 	private $bar;
@@ -30,7 +38,7 @@ class Foo {
 
 $foo = new Foo( 'hello' );
 $rules = array( 'bar' => array( Rule::MAX_LENGTH => 2 ) );
-// same way
+
 $problems = $vd->checkObject( $foo, $rules );
 var_dump( $problems ); // array( 'bar' => array( 'max_length' => '' ) )
 
