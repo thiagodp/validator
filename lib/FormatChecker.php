@@ -98,7 +98,7 @@ class FormatChecker {
 		$this->longDateTimeFormat = 'm/d/Y H:i:s';
 	}
 	
-	// METHOD HANDLING ________________________________________________________
+	// METHOD HANDLING
 	
 	function add( $name, $callback ) {
 		$this->methods[ $name ] = $callback;
@@ -114,7 +114,7 @@ class FormatChecker {
 		return array_merge( $this->originalMethods, $this->methods );
 	}
 	
-	// CONFIGURATION __________________________________________________________
+	// CONFIGURATION
 	
 	function encoding( $encoding = null ) { // getter/setter
 		if ( isset( $encoding ) ) {
@@ -179,7 +179,7 @@ class FormatChecker {
 		return $this->encodingIsUnicode() ? 'u' : '';
 	}
 	
-	// FORMATTING _____________________________________________________________
+	// FORMATTING
 	
 	function _anything( $value ) {
 		return true;
@@ -324,7 +324,7 @@ class FormatChecker {
 		return $this->matches( '^(?:[A-Fa-f0-9]{1,4}:){7}[A-Fa-f0-9]{1,4}$', $value );
 	}
 	
-	// OTHER __________________________________________________________________
+	// OTHER
 	
 	protected function matches( $regex, $value ) {
 		$u = $this->encodingRegExSymbol();		

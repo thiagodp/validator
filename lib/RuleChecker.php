@@ -64,7 +64,7 @@ class RuleChecker {
 		$this->encoding = isset( $encoding ) ? $encoding : Encoding::DEFAULT_ENCODING;
 	}
 	
-	// METHOD HANDLING ________________________________________________________
+	// METHOD HANDLING
 	
 	function add( $name, $callback ) {
 		$this->methods[ $name ] = $callback;
@@ -80,7 +80,7 @@ class RuleChecker {
 		return array_merge( $this->originalMethods, $this->methods );
 	}	
 	
-	// CONFIGURATION __________________________________________________________
+	// CONFIGURATION
 	
 	function locale( $locale = null ) { // getter/setter
 		if ( isset( $locale ) ) {
@@ -96,7 +96,7 @@ class RuleChecker {
 		return $this->encoding;
 	}
 	
-	// RULES __________________________________________________________________
+	// RULES
 	
 	function required( $value, $ruleValue = true ) {
 		return false === $ruleValue
@@ -174,7 +174,7 @@ class RuleChecker {
 		return call_user_func( $methods[ $name ], $value );
 	}
 	
-	// OTHER __________________________________________________________________
+	// OTHER
 	
 	protected function rangeValues( array $ruleValue ) {
 		$array = array_values( $ruleValue );

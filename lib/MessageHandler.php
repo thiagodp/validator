@@ -19,7 +19,6 @@ class MessageHandler {
 	
 	// Additional keys
 	const VALUE = 'value';
-	// ---
 	
 	private $locale;
 	private $messages;
@@ -43,7 +42,14 @@ class MessageHandler {
 		}
 		$this->messages[ $loc ][ $rule ] = $message;
 		return $this;
-	}	
+	}
+	
+	function remove( $rule, $locale = null ) {
+		$loc = isset( $locale ) ? $locale : $this->locale();
+		if ( isset( $this->messages[ $loc ] ) ) {
+			unset( $this->messages[ $loc ][ $rule ] );
+		}
+	}
 	
 	function messages() {
 		return $this->messages;
