@@ -4,7 +4,7 @@ Easy and powerful validation livrary for PHP.
 
 [![Build Status](https://travis-ci.org/thiagodp/validator.svg?branch=master)](https://travis-ci.org/thiagodp/validator)
 
-Current [version](http://semver.org/): `0.4.0` (_not production-ready yet, but usable_)
+We use [semantic versioning](http://semver.org/). See [our releases](https://github.com/thiagodp/validator/releases).
 
 ## Installation
 
@@ -74,13 +74,10 @@ _** Not fully tested, and it will change soon._
 ### More
 
 - [x] Supports UTF-8 and other common formats (ISO-8859-1, Windows-1251, ASCII, etc.)
-- [x] Error messages can be specified by locale.
-- [x] Error messages can be specified at once, allowing, for example, reading them from a JSON file.
-- [x] Formats can be specified by locale.
-- [x] Formats can be specified at once, allowing, for example, reading them from a JSON file.
-- [x] Formats can be specified without having to extend any class.
-- [x] Rules can be specified without having to extend any class.
-- [x] Classes use [fluent interface](https://en.wikipedia.org/wiki/Fluent_interface) (you type less).
+- [x] Error messages and formats can be specified by locale.
+- [x] Error messages and formats can be specified at once, and thus read them from a JSON file.
+- [x] Formats and rules can be specified without having to extend any class.
+- [x] Classes use a [fluent interface](https://en.wikipedia.org/wiki/Fluent_interface) (that is, you type less).
 - [ ] Builder classes available.
 - [x] Can check a single value.
 - [x] Can check a value array.
