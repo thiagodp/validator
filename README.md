@@ -81,7 +81,7 @@ _** Not fully tested, and it will change soon._
 - [ ] Builder classes available.
 - [x] Can check a single value.
 - [x] Can check a value array.
-- [ ] Can check an object.
+- [x] Can check an object.
 
 ## Examples
 
