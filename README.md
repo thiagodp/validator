@@ -11,11 +11,8 @@ We use [semantic versioning](http://semver.org/). See [our releases](https://git
 ```command
 composer require phputil/validator
 ```
-
-## Dependencies
-
-Dependends only on [phputil\rtti](https://github.com/thiagodp/rtti).
-(We use it to be able to retrieve private and protected values from non-`stdClass` objects)
+Dependends only on [phputil/rtti](https://github.com/thiagodp/rtti).
+We use it to be able to retrieve private and protected values from non-`stdClass` objects.
 
 ## Features
 
@@ -35,7 +32,7 @@ Dependends only on [phputil\rtti](https://github.com/thiagodp/rtti).
 - [x] `value_range`
 - [x] `regex`
 - [x] `format`
-- [x] custom: you can add others easily. Simple like this:
+- [x] **custom**: you can add others easily. See below.
 
 #### Adding a custom rule
 
@@ -83,13 +80,13 @@ echo isset( $problems[ 'myRule' ] ) ? 'myRule as hurt' : 'passed';
 - [x] `ip`
 - [x] `ipv4`
 - [x] `ipv6`
-- [x] custom: you can add others easily. See below.
+- [x] **custom**: you can add others easily. See below.
 
 _\* Not fully tested, but it should work._
 
 _** Not fully tested, and it will change soon._
 
-#### Adding a custom rule
+#### Adding a custom format
 
 ```php
 // Adding a format "myFormat" in which the value should start with "https://"
@@ -98,7 +95,7 @@ $validator->setFormat( 'myFormat', function( $value ) {
 	} );
 ```
 
-Now checking the rule:
+Now checking the format:
 
 ```php
 $value = 'http://non-https-site.com';
