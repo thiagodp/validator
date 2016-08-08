@@ -45,6 +45,12 @@ class RuleCheckerTest extends PHPUnit_Framework_TestCase {
 		$this->rc->remove( 'myRule' );
 		$exists = isset( $this->rc->methods()[ 'myRule' ] );
 		$this->assertFalse( $exists );
+	}
+	
+	function test_can_add_a_function() {
+		$this->rc->set( 'myRule', function( $x ) { return true; } );
+		$exists = isset( $this->rc->methods()[ 'myRule' ] );
+		$this->assertTrue( $exists );
 	}	
 	
 	// RULES __________________________________________________________________

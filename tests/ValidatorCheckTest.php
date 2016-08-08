@@ -82,4 +82,20 @@ class ValidatorCheckTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( 0, mb_strpos( $problems[ Rule::REQUIRED ], 'dummy', 0, $this->vd->encoding() ) );
 	}
 	
+	function test_validates_with_user_defined_rule_function() {
+		$this->vd->setRule( 'aRule', function( $x ) { return 0 == $x; } );
+		$problems = $this->vd->check( 1, array( 'aRule' => true ) );
+		$this->assertTrue( isset( $problems[ 'aRule' ] ) );
+	}
+	
+	function test_validates_with_user_defined_format_function() {
+		$this->vd->setFormat( 'aFormat', function( $value ) {
+				return mb_strpos( $value, 'https://' ) === 0;
+				} );
+		$problems = $this->vd->check( 'https://', array( Rule::FORMAT => 'aFormat' ) );
+		$this->assertFalse( isset( $problems[ Rule::FORMAT ] ) );
+		$problems = $this->vd->check( 'http://', array( Rule::FORMAT => 'aFormat' ) );
+		$this->assertTrue( isset( $problems[ Rule::FORMAT ] ) );
+	}
+	
 }
