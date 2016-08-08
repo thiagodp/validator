@@ -1,4 +1,4 @@
-# validator
+# phputil\validator
 
 Easy and powerful validation library for PHP.
 
@@ -14,10 +14,15 @@ composer require phputil/validator
 
 ## Dependencies
 
-Dependends only on [phputil/rtti](https://github.com/thiagodp/rtti).
+Dependends only on [phputil\rtti](https://github.com/thiagodp/rtti).
 (We use it to be able to retrieve private and protected values from non-`stdClass` objects)
 
 ## Features
+
+- [x] Validate basic types
+- [x] Validate arrays
+- [x] Validate dynamic objects (`stdClass`)
+- [x] Validate objects (of user-created classes) with private or protected attributes
 
 ### Available Rules
 
@@ -30,7 +35,21 @@ Dependends only on [phputil/rtti](https://github.com/thiagodp/rtti).
 - [x] `value_range`
 - [x] `regex`
 - [x] `format`
-- [x] custom (you can add others easily)
+- [x] custom: you can add others easily. Simple like this:
+
+#### Adding a custom rule
+
+```php
+// Adding a custom rule called "myRule" in which the value should be zero:
+$validator->setRule( 'myRule', function( $value ) { return 0 == $value; } );
+```
+Now checking the custom rule:
+```php
+$value = rand( 0, 5 ); // Value to be checked, a random between 0 and 5 (inclusive)
+$rules = array( 'myRule' => true ); // Rules to be checked. In this example, just "myRule".
+$problems = $validator->check( $value, $rules ); // check() will return the hurt rules
+echo isset( $problems[ 'myRule' ] ) ? 'myRule as hurt' : 'passed';
+```
 
 ### Available Formats
 
@@ -64,11 +83,29 @@ Dependends only on [phputil/rtti](https://github.com/thiagodp/rtti).
 - [x] `ip`
 - [x] `ipv4`
 - [x] `ipv6`
-- [x] custom (you can add others easily)
+- [x] custom: you can add others easily. See below.
 
 _\* Not fully tested, but it should work._
 
 _** Not fully tested, and it will change soon._
+
+#### Adding a custom rule
+
+```php
+// Adding a format "myFormat" in which the value should start with "https://"
+$validator->setFormat( 'myFormat', function( $value ) {
+	return mb_strpos( $value, 'https://' ) === 0;
+	} );
+```
+
+Now checking the rule:
+
+```php
+$value = 'http://non-https-site.com';
+$rules = array( Rule::FORMAT => 'myFormat' ); // rules to be checked
+$problems = $validator->check( $value, $rules ); // check() returns the hurt rules
+echo isset( $problems[ Rule::FORMAT ] ) ? 'myFormat as hurt' : 'passed';
+```
 
 ### Message Replacements
 
