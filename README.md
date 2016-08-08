@@ -16,10 +16,10 @@ We use it to be able to retrieve private and protected values from non-`stdClass
 
 ## Features
 
-- [x] Validate basic types
-- [x] Validate arrays
-- [x] Validate dynamic objects (`stdClass`)
-- [x] Validate objects (of user-created classes) with private or protected attributes
+- [x] Validate basic types (see [example 1](https://github.com/thiagodp/validator/tree/master/examples/ex1.php))
+- [x] Validate arrays (see [example 2](https://github.com/thiagodp/validator/tree/master/examples/ex3.php))
+- [x] Validate dynamic objects (`stdClass`) (see [example 3](https://github.com/thiagodp/validator/tree/master/examples/ex3.php))
+- [x] Validate objects (of user-created classes) with private or protected attributes (see  [example 3](https://github.com/thiagodp/validator/tree/master/examples/ex3.php))
 
 ### Available Rules
 
