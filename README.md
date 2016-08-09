@@ -11,18 +11,15 @@ We use [semantic versioning](http://semver.org/). See [our releases](https://git
 ```command
 composer require phputil/validator
 ```
-
-## Dependencies
-
-Dependends only on [phputil\rtti](https://github.com/thiagodp/rtti).
-(We use it to be able to retrieve private and protected values from non-`stdClass` objects)
+Dependends only on [phputil/rtti](https://github.com/thiagodp/rtti).
+We use it to be able to retrieve private and protected values from non-`stdClass` objects.
 
 ## Features
 
-- [x] Validate basic types
-- [x] Validate arrays
-- [x] Validate dynamic objects (`stdClass`)
-- [x] Validate objects (of user-created classes) with private or protected attributes
+- [x] Validate basic types (see [example 1](https://github.com/thiagodp/validator/tree/master/examples/ex1.php))
+- [x] Validate arrays (see [example 2](https://github.com/thiagodp/validator/tree/master/examples/ex3.php))
+- [x] Validate dynamic objects (`stdClass`) (see [example 3](https://github.com/thiagodp/validator/tree/master/examples/ex3.php))
+- [x] Validate objects (of user-created classes) with private or protected attributes (see  [example 3](https://github.com/thiagodp/validator/tree/master/examples/ex3.php))
 
 ### Available Rules
 
@@ -35,7 +32,7 @@ Dependends only on [phputil\rtti](https://github.com/thiagodp/rtti).
 - [x] `value_range`
 - [x] `regex`
 - [x] `format`
-- [x] custom: you can add others easily. Simple like this:
+- [x] **custom**: you can add others easily. See below.
 
 #### Adding a custom rule
 
@@ -83,11 +80,11 @@ echo isset( $problems[ 'myRule' ] ) ? 'myRule as hurt' : 'passed';
 - [x] `ip`
 - [x] `ipv4`
 - [x] `ipv6`
-- [x] custom: you can add others easily. See below.
+- [x] **custom**: you can add others easily. See below.
 
 You may specify the separator for date-based formats. Default is "/", for example "31/12/1999".
 
-#### Adding a custom rule
+#### Adding a custom format
 
 ```php
 // Adding a format "myFormat" in which the value should start with "https://"
@@ -96,7 +93,7 @@ $validator->setFormat( 'myFormat', function( $value ) {
 	} );
 ```
 
-Now checking the rule:
+Now checking the format:
 
 ```php
 $value = 'http://non-https-site.com';
