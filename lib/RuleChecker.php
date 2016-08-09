@@ -144,27 +144,35 @@ class RuleChecker {
 	}
 	
 	function format( $value, $ruleValue ) {
-		/*
 		$methods = $this->formatChecker->methods();
-		if ( ! isset( $methods[ $ruleValue ] ) ) {
-			throw new FormatException( 'Formatting rule "'. $ruleValue . '" is not available.' );
-		}
-		return call_user_func( $methods[ $ruleValue ], $value );
-		*/
-		$methods = $this->formatChecker->methods();
+		// If it is a string, it should be the method to be called
 		if ( is_string( $ruleValue ) ) {
 			if ( ! isset( $methods[ $ruleValue ] ) ) {
 				throw new FormatException( 'Formatting rule "'. $ruleValue . '" is not available.' );
 			}
+			// Calls a method of FormatChecker (or a user-defined format method)
 			return call_user_func( $methods[ $ruleValue ], $value );
 		}
 		if ( ! is_array( $ruleValue ) ) {
-			throw new FormatException( 'Formatting rule should be a string or an array.' );
-		}		
+			throw new FormatException( 'Formatting rule must be a string or an array.' );
+		}
+		
+		// If it has FormatOption::NAME, it should be a parameterized method
+		$hasFormatName = isset( $ruleValue[ FormatOption::NAME ] );
+		if ( $hasFormatName ) {
+			$params = array( $value );
+			$hasSeparator = isset( $ruleValue[ FormatOption::SEPARATOR ] );
+			if ( $hasSeparator ) {
+				$params []= $ruleValue[ FormatOption::SEPARATOR ];
+			}
+			$name = $ruleValue[ FormatOption::NAME ];
+			return call_user_func_array( $methods[ $name ], $params );
+		}
+		
+		// Otherwise, it should be a locale
 		if ( ! isset( $ruleValue[ $this->locale ] ) ) {
 			throw new FormatException( 'Formatting rule for locale "'. $this->locale . '" is not available.' );
 		}
-		
 		$name = $ruleValue[ $this->locale ];
 		if ( ! isset( $methods[ $name ] ) ) {
 			throw new FormatException( 'Formatting rule "'. $name . '" is not available.' );

@@ -19,9 +19,13 @@ class FormatCheckerTest extends PHPUnit_Framework_TestCase {
 		$this->fc = new FormatChecker();
 	}
 	
-	function verify_characters( array $expectations, $method ) {
+	function verify_characters( array $expectations, $method, $extra = null ) {
 		foreach ( $expectations as $characters => $expected ) {
-			$result = call_user_func( array( $this->fc, $method ), $characters );
+			$params = array( $characters );
+			if ( $extra !== null ) {
+				$params []= $extra;
+			}
+			$result = call_user_func_array( array( $this->fc, $method ), $params );
 			$msg = 'Rule "' . $method . '" does not match with "' .
 				str_replace( array( "\n", "\r" ), array( "\\n", "\\r" ), $characters ) . '"';
 			$this->assertEquals( $expected, $result, $msg );
@@ -42,7 +46,7 @@ class FormatCheckerTest extends PHPUnit_Framework_TestCase {
 	
 	function test_name() {
 		$expectations = array(	
-			// FAILS ----------------------------------------------------------
+			// FAILS
 			' '										=> false,	// space alone
 			'.'										=> false,	// dot alone
 			'_'										=> false,	// underline alone			
@@ -55,7 +59,7 @@ class FormatCheckerTest extends PHPUnit_Framework_TestCase {
 			'John\''								=> false,	// plic at end
 			'Jhon 5 Zac'							=> false,	// not accept numbers
 			'john@site.com'							=> false,	// not accept symbols
-			// PASS -----------------------------------------------------------
+			// PASS
 			"\n"									=> true,	// Unix EOL			
 			''										=> true,
 			'AÁÀÄaáàä'								=> true,			
@@ -71,7 +75,7 @@ class FormatCheckerTest extends PHPUnit_Framework_TestCase {
 	
 	function test_word() {
 		$expectations = array(
-			// FAILS ----------------------------------------------------------
+			// FAILS
 			' '			=> false,
 			'.'			=> false,			
 			'$#!@'		=> false,
@@ -79,7 +83,7 @@ class FormatCheckerTest extends PHPUnit_Framework_TestCase {
 			"\r"		=> false,	// Mac EOL
 			'A '		=> false,
 			'A. '		=> false,
-			// PASS -----------------------------------------------------------
+			// PASS
 			"\n"		=> true,	// Unix EOL			
 			''			=> true,
 			'_'			=> true,
@@ -92,13 +96,70 @@ class FormatCheckerTest extends PHPUnit_Framework_TestCase {
 		$this->verify_characters( $expectations, '_word' );
 	}
 	
-	// function test_alphanumeric() {}
-	// function test_alpha() {}
-	// function test_ascii() {}
+	function test_alphanumeric() {
+		$expectations = array(
+			// FAILS
+			"\r" => false,
+			"\r\n" => false,
+			' ' => false,
+			'.' => false,
+			// PASS
+			'a' => true,
+			'A' => true,
+			'z' => true,
+			'Z' => true,
+			"\n" => true,
+			'á' => true,
+			'ç' => true,
+			'ü' => true,
+			'0' => true,
+			'9' => true,
+			);
+			
+		$this->verify_characters( $expectations, '_alphanumeric' );		
+	}
+	
+	function test_alpha() {
+		$expectations = array(
+			// FAILS
+			"\r" => false,
+			"\r\n" => false,
+			'0' => false,
+			'9' => false,
+			' ' => false,
+			'.' => false,
+			// PASS
+			'a' => true,
+			'A' => true,
+			'z' => true,
+			'Z' => true,
+			"\n" => true,
+			'á' => true,
+			'ç' => true,
+			'ü' => true,
+			);
+			
+		$this->verify_characters( $expectations, '_alpha' );
+	}
+	
+	function test_ascii() {
+		$expectations = array(
+			// FAILS
+			chr( 10 ) => true,
+			chr( 13 )  => true,
+			chr( 32 )  => true,
+			chr( 127 )  => true,
+			// PASS
+			chr( 128 )  => false,
+			chr( 255 )  => false,
+			);
+		
+		$this->verify_characters( $expectations, '_ascii' );
+	}
 	
 	function test_numeric() {
 		$expectations = array(
-			// FAILS ----------------------------------------------------------
+			// FAILS
 			' '			=> false,
 			'.'			=> false,			
 			'$#!@'		=> false,
@@ -106,7 +167,7 @@ class FormatCheckerTest extends PHPUnit_Framework_TestCase {
 			"\r\n"		=> false,	// Win EOL
 			"\r"		=> false,	// Mac EOL
 			'A'			=> false,
-			// PASS -----------------------------------------------------------
+			// PASS
 			''			=> true,
 			'0'			=> true,
 			'.0'		=> true,	// decimal separator
@@ -128,7 +189,7 @@ class FormatCheckerTest extends PHPUnit_Framework_TestCase {
 	
 	function test_integer() {
 		$expectations = array(
-			// FAILS ----------------------------------------------------------
+			// FAILS
 			' '			=> false,
 			'.'			=> false,			
 			'$#!@'		=> false,
@@ -146,7 +207,7 @@ class FormatCheckerTest extends PHPUnit_Framework_TestCase {
 			'-1e5'		=> false,	// power notation
 			'1e-5'		=> false,	// power notation
 			'-1e-5'		=> false,	// power notation			
-			// PASS -----------------------------------------------------------
+			// PASS 
 			''			=> true,
 			'0'			=> true,
 			'-1'		=> true		// signed negative
@@ -158,7 +219,7 @@ class FormatCheckerTest extends PHPUnit_Framework_TestCase {
 	
 	function test_price() {
 		$expectations = array(
-			// FAILS ----------------------------------------------------------
+			// FAILS
 			' '			=> false,
 			'.'			=> false,			
 			'$#!@'		=> false,
@@ -177,7 +238,7 @@ class FormatCheckerTest extends PHPUnit_Framework_TestCase {
 			'+1.0'		=> false,	// signed positive + decimal separator
 			'-1.0'		=> false,	// signed negative + decimal separator
 			'1.000'		=> false,	// 3 decimal places
-			// PASS -----------------------------------------------------------
+			// PASS
 			''			=> true,
 			'0'			=> true,
 			'.0'		=> true,	// decimal separator
@@ -191,7 +252,7 @@ class FormatCheckerTest extends PHPUnit_Framework_TestCase {
 
 	function test_tax() {
 		$expectations = array(
-			// FAILS ----------------------------------------------------------
+			// FAILS
 			' '			=> false,
 			'.'			=> false,			
 			'$#!@'		=> false,
@@ -210,7 +271,7 @@ class FormatCheckerTest extends PHPUnit_Framework_TestCase {
 			'+1.0'		=> false,	// signed positive + decimal separator
 			'-1.0'		=> false,	// signed negative + decimal separator
 			'1.0000'	=> false,	// 4 decimal places
-			// PASS -----------------------------------------------------------
+			// PASS
 			''			=> true,
 			'0'			=> true,
 			'.0'		=> true,	// decimal separator
@@ -226,13 +287,13 @@ class FormatCheckerTest extends PHPUnit_Framework_TestCase {
 	function date_expectations( array $order, $separator ) {
 		
 		$tests = array(
-			// FAILS ------------------------------------------------------------------------------
+			// FAILS
 			array( 'value' => array( 'y' => 'a', 'm' => '1', 'd' => '1' ), 'expect' => false ),
 			array( 'value' => array( 'y' => '1', 'm' => 'a', 'd' => '1' ), 'expect' => false ),
 			array( 'value' => array( 'y' => '1234', 'm' => '13', 'd' => '1' ), 'expect' => false ),
 			array( 'value' => array( 'y' => '1234', 'm' => '12', 'd' => '32' ), 'expect' => false ),
 			array( 'value' => array( 'y' => '1234', 'm' => '02', 'd' => '31' ), 'expect' => false ),
-			// PASS -------------------------------------------------------------------------------
+			// PASS
 			array( 'value' => array( 'y' => '1', 'm' => '1', 'd' => '1' ), 'expect' => true ),
 			array( 'value' => array( 'y' => '12', 'm' => '1', 'd' => '1' ), 'expect' => true ),
 			array( 'value' => array( 'y' => '123', 'm' => '1', 'd' => '1' ), 'expect' => true ),			
@@ -258,80 +319,135 @@ class FormatCheckerTest extends PHPUnit_Framework_TestCase {
 	
 	
 	function test_date_ymd() {
-		$expectations = $this->date_expectations( array( 'y', 'm', 'd' ),  '/' );
+		$expectations = $this->date_expectations( array( 'y', 'm', 'd' ), '/' );
 		$this->verify_characters( $expectations, '_date_ymd' );
 	}
 	
 	function test_date_mdy() {
-		$expectations = $this->date_expectations( array( 'm', 'd', 'y' ),  '/' );
+		$expectations = $this->date_expectations( array( 'm', 'd', 'y' ), '/' );
 		$this->verify_characters( $expectations, '_date_mdy' );
 	}
 	
 	function test_date_dmy() {
-		$expectations = $this->date_expectations( array( 'd', 'm', 'y' ),  '/' );
+		$expectations = $this->date_expectations( array( 'd', 'm', 'y' ), '/' );
 		$this->verify_characters( $expectations, '_date_dmy' );
 	}
 	
 	
 	function test_date_ymd_dotted() {
-		$expectations = $this->date_expectations( array( 'y', 'm', 'd' ),  '.' );
-		$this->verify_characters( $expectations, '_date_ymd_dotted' );
+		$expectations = $this->date_expectations( array( 'y', 'm', 'd' ), '.' );
+		$this->verify_characters( $expectations, '_date_ymd', '.' );
 	}
 	
 	function test_date_mdy_dotted() {
-		$expectations = $this->date_expectations( array( 'm', 'd', 'y' ),  '.' );
-		$this->verify_characters( $expectations, '_date_mdy_dotted' );
+		$expectations = $this->date_expectations( array( 'm', 'd', 'y' ), '.' );
+		$this->verify_characters( $expectations, '_date_mdy', '.' );
 	}
 	
 	function test_date_dmy_dotted() {
-		$expectations = $this->date_expectations( array( 'd', 'm', 'y' ),  '.' );
-		$this->verify_characters( $expectations, '_date_dmy_dotted' );
+		$expectations = $this->date_expectations( array( 'd', 'm', 'y' ), '.' );
+		$this->verify_characters( $expectations, '_date_dmy', '.' );
 	}
 	
 	
 	function test_date_ymd_dashed() {
-		$expectations = $this->date_expectations( array( 'y', 'm', 'd' ),  '-' );
-		$this->verify_characters( $expectations, '_date_ymd_dashed' );
+		$expectations = $this->date_expectations( array( 'y', 'm', 'd' ), '-' );
+		$this->verify_characters( $expectations, '_date_ymd', '-' );
 	}
 	
 	function test_date_mdy_dashed() {
-		$expectations = $this->date_expectations( array( 'm', 'd', 'y' ),  '-' );
-		$this->verify_characters( $expectations, '_date_mdy_dashed' );
+		$expectations = $this->date_expectations( array( 'm', 'd', 'y' ), '-' );
+		$this->verify_characters( $expectations, '_date_mdy', '-' );
 	}
 	
 	function test_date_dmy_dashed() {
-		$expectations = $this->date_expectations( array( 'd', 'm', 'y' ),  '-' );
-		$this->verify_characters( $expectations, '_date_dmy_dashed' );
+		$expectations = $this->date_expectations( array( 'd', 'm', 'y' ), '-' );
+		$this->verify_characters( $expectations, '_date_dmy', '-' );
 	}
 	
+	
 	function test_date() {
-		$expectations = $this->date_expectations( array( 'y', 'm', 'd' ),  '-' );
-		
-		// PHP' DateTime ACCEPTS the following formats :( -----------------------------------------
-		unset( $expectations[ 'a-1-1' ] );
-		unset( $expectations[ '1-a-1' ] );
-		unset( $expectations[ '1-1-1' ] );
-		unset( $expectations[ '1234-13-1' ] );
-		unset( $expectations[ '1234-12-32' ] );
-		unset( $expectations[ '1234-02-31' ] );
-		// ----------------------------------------------------------------------------------------
-		
+		$expectations = $this->date_expectations( array( 'd', 'm', 'y' ), '/' );		
 		$this->verify_characters( $expectations, '_date' );
 	}
 	
-	// function test_time()
-	// function test_longtime()
-	// function test_datetime()
-	// function test_longdatetime()
+	function test_time() {
+		$expectations = array(
+			// FAIL
+			'00:60' => false,
+			'24:00' => false,
+			'23h59m' => false,
+			// PASS
+			'00:00' => true,
+			'23:59' => true,
+			);
+			
+		$this->verify_characters( $expectations, '_time' );
+	}	
+	
+	function test_longtime() {
+		$expectations = array(
+			// FAIL
+			'24:00:00' => false,
+			'00:60:00' => false,
+			'00:00:60' => false,
+			'23h59m59s' => false,
+			'00:00' => false,
+			'23:59' => false,
+			// PASS
+			'00:00:00' => true,
+			'23:59:59' => true
+			);
+			
+		$this->verify_characters( $expectations, '_longtime' );
+	}
+	
+	
+	function test_datetime() {
+		$expectations = array(
+			// FAIL
+			'0/1/1 00:00' => false,
+			'1/0/1 00:00' => false,
+			'1/1/0 00:00' => false,
+			'1/1/1 00:60' => false,
+			'1/1/1 24:00' => false,
+			'1/1/1 23h59m' => false,
+			// PASS
+			'1/1/1 00:00' => true,
+			'1/1/1 23:59' => true,
+			);
+			
+		$this->verify_characters( $expectations, '_datetime' );		
+	}
+	
+	function test_longdatetime() {
+		$expectations = array(
+			// FAIL
+			'0/1/1 00:00' => false,
+			'1/0/1 00:00' => false,
+			'1/1/0 00:00' => false,
+			'1/1/1 00:60' => false,
+			'1/1/1 24:00' => false,
+			'1/1/1 23h59m' => false,
+			'1/1/1 00:00:60' => false,
+			'1/1/1 00:60:00' => false,
+			'1/1/1 24:00:00' => false,
+			// PASS
+			'1/1/1 00:00:00' => true,
+			'1/1/1 23:59:59' => true,
+			);
+			
+		$this->verify_characters( $expectations, '_longdatetime' );			
+	}
 
 	function test_email() {
 		$expectations = array(
-			// FAILS ----------------------------------------------------------
+			// FAILS
 			'a.c'				=> false,
 			'a@.c'				=> false,
 			'@b.c'				=> false,
 			'5@b.c'				=> false,
-			// PASS -----------------------------------------------------------
+			// PASS
 			'a@b.c'				=> true,
 			'a@b.c.d'			=> true,
 			'a1@b2.c3.d4'		=> true,
@@ -342,11 +458,11 @@ class FormatCheckerTest extends PHPUnit_Framework_TestCase {
 	
 	function test_http() {
 		$expectations = array(
-			// FAILS ----------------------------------------------------------
+			// FAILS
 			'.com'				=> false,
 			'ftp://sth.com'		=> false,
 			'any://sth.com'		=> false,
-			// PASS -----------------------------------------------------------
+			// PASS
 			'ab.c'				=> true,
 			'sth.com'			=> true,
 			'www.sth.com'		=> true,
@@ -360,10 +476,10 @@ class FormatCheckerTest extends PHPUnit_Framework_TestCase {
 
 	function test_url() {
 		$expectations = array(
-			// FAILS ----------------------------------------------------------
+			// FAILS
 			'.com'				=> false,
 			'a.b'				=> false,
-			// PASS -----------------------------------------------------------
+			// PASS
 			'ab.c'				=> true,
 			'sth.com'			=> true,
 			'www.sth.com'		=> true,
@@ -378,12 +494,12 @@ class FormatCheckerTest extends PHPUnit_Framework_TestCase {
 	
 	function test_ip() {
 		$expectations = array(
-			// FAILS ----------------------------------------------------------
+			// FAILS
 			'256.0.0.0'									=> false,
 			'0.256.0.0'									=> false,
 			'0.0.256.0'									=> false,
 			'0.0.0.256'									=> false,
-			// PASS -----------------------------------------------------------
+			// PASS
 			'0.0.0.0'									=> true,
 			'255.255.255.255'							=> true,
 			'0:0:0:0:0:0:0:0'							=> true,
@@ -396,12 +512,12 @@ class FormatCheckerTest extends PHPUnit_Framework_TestCase {
 	
 	function test_ipv4() {
 		$expectations = array(
-			// FAILS ----------------------------------------------------------
+			// FAILS
 			'256.0.0.0'			=> false,
 			'0.256.0.0'			=> false,
 			'0.0.256.0'			=> false,
 			'0.0.0.256'			=> false,
-			// PASS -----------------------------------------------------------
+			// PASS
 			'0.0.0.0'			=> true,
 			'255.255.255.255'	=> true
 		);
@@ -411,10 +527,10 @@ class FormatCheckerTest extends PHPUnit_Framework_TestCase {
 	
 	function test_ipv6() {
 		$expectations = array(
-			// FAILS ----------------------------------------------------------
+			// FAILS
 			'0.0.0.0'									=> false,
 			'255.255.255.255'							=> false,
-			// PASS -----------------------------------------------------------
+			// PASS
 			'0:0:0:0:0:0:0:0'							=> true,
 			'FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF'	=> true,
 			'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff'	=> true,

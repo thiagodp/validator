@@ -7,6 +7,7 @@ require_once 'lib/RuleChecker.php';
 use PHPUnit_Framework_TestCase;
 use phputil\FormatChecker;
 use phputil\RuleChecker;
+use phputil\FormatOption;
 
 
 /** Class used in some tests */
@@ -171,6 +172,18 @@ class RuleCheckerTest extends PHPUnit_Framework_TestCase {
 	
 	function test_format_returns_true_when_matches() {
 		$this->assertTrue( $this->rc->format( '5', 'numeric' ) );
+	}
+	
+	function test_format_allows_array_with_format_name() {
+		$result = $this->rc->format( '5', array( FormatOption::NAME => 'numeric' ) );
+		$this->assertTrue( $result );
+	}
+	
+	function test_format_allows_array_with_format_name_and_parameter() {
+		$result = $this->rc->format( '1999-12-31',
+			array( FormatOption::NAME => 'date_ymd', FormatOption::SEPARATOR => '-' )
+			);
+		$this->assertTrue( $result );
 	}	
 		
 }

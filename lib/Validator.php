@@ -217,11 +217,11 @@ class Validator {
 		$problems = array();
 		foreach ( $rules as $k => $v ) {
 			if ( isset( $allRules[ $k ] ) ) {
+				// Calls a method of RuleChecker (or a user-defined rule method)
 				$result = call_user_func( $allRules[ $k ], $value, $rules[ $k ] );
 				if ( ! $result ) {
 					$problems[ $k ] = $this->messageHandler->format(
 						$value, $k, $rules, $this->locale(), $label );
-					//$problems[ $k ] = isset( $this->messages[ $k ] ) ? $this->messages[ $k ] : '';
 				}
 			}
 		}

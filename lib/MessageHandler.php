@@ -2,15 +2,6 @@
 namespace phputil;
 
 /**
- *  Option.
- *  
- *  @author	Thiago Delgado Pinto
- */
-class Option {
-	const LABEL	= 'label';	// value is string | array( locale => string )	
-}
-
-/**
  *  Message handler.
  *  
  *  @author	Thiago Delgado Pinto

@@ -16,31 +16,40 @@ class Format {
 	const ASCII				= 'ascii';				// character codes 0-127
 	const NUMERIC			= 'numeric';			// number
 	const INTEGER			= 'integer';
+	
 	const PRICE				= 'price';				// numeric(N,2)
 	const TAX				= 'tax';				// numeric(N,3)
 	
-	const DATE_YMD			= 'date_ymd';			// yyyy/dd/mm
-	const DATE_MDY			= 'date_mdy';			// mm/dd/yyyy
-	const DATE_DMY			= 'date_dmy';			// dd/mm/yyyy
+	// DATE
 	
-	const DATE_YMD_DOTTED	= 'date_ymd_dotted';	// yyyy.dd.mm
-	const DATE_MDY_DOTTED	= 'date_mdy_dotted';	// mm.dd.yyyy
-	const DATE_DMY_DOTTED	= 'date_dmy_dotted';	// dd.mm.yyyy
+	const DATE_YMD			= 'date_ymd';	// yyyy/dd/mm
+	const DATE_MDY			= 'date_mdy';	// mm/dd/yyyy
+	const DATE_DMY			= 'date_dmy';	// dd/mm/yyyy
+	const DATE				= 'date';		// same as DATE_DMY: the most popular, according to https://en.wikipedia.org/wiki/Date_format_by_country)
 	
-	const DATE_YMD_DASHED	= 'date_ymd_dashed';	// yyyy-dd-mm
-	const DATE_MDY_DASHED	= 'date_mdy_dashed';	// mm-dd-yyyy
-	const DATE_DMY_DASHED	= 'date_dmy_dashed';	// dd-mm-yyyy	
+	// TIME
 	
-	const DATE				= 'date';				// dd/mm/yyyy (the most popular, according to https://en.wikipedia.org/wiki/Date_format_by_country)
+	const TIME				= 'time';		// hh:mm, from 00:00 to 23:59
+	const LONG_TIME			= 'longtime';	// hh:mm:ss, from 00:00:00 to 23:59:59
 	
-	const TIME				= 'time';				// hh:mm
-	const SHORT_TIME		= 'longtime';			// hh:mm:ss
+	// DATETIME
 	
-	const DATE_TIME			= 'datetime';			// dd/mm/yyyy hh:mm
-	const LONG_DATE_TIME	= 'longdatetime';		// mm/dd/yyyy hh:mm:ss
+	const DATETIME_YMD		= 'datetime_ymd';	// yyyy/dd/mm hh:mm
+	const DATETIME_MDY		= 'datetime_mdy';	// mm/dd/yyyy hh:mm
+	const DATETIME_DMY		= 'datetime_dmy';	// dd/mm/yyyy hh:mm
+	const DATETIME			= 'datetime';		// same as DATETIME_DMY
+	
+	// LONGDATETIME
+	
+	const LONGDATETIME_YMD	= 'longdatetime_ymd';	// yyyy/dd/mm hh:mm
+	const LONGDATETIME_MDY	= 'longdatetime_mdy';	// mm/dd/yyyy hh:mm
+	const LONGDATETIME_DMY	= 'longdatetime_dmy';	// dd/mm/yyyy hh:mm
+	const LONGDATETIME		= 'longdatetime';		// same as LONG_DATETIME_DMY
+	
+	// WEB
 	
 	const EMAIL				= 'email';
-	const HTTP_URL			= 'http';				// http://... or https://...
+	const HTTP				= 'http';				// http://... or https://...
 	const URL				= 'url';				// any://...
 	const IP				= 'ip';					// ipv4 or ipv6
 	const IPV4				= 'ipv4';
@@ -80,22 +89,14 @@ class FormatChecker {
 	
 	private $encoding;
 	private $decimalPlacesSeparator;
-	private $dateFormat;
-	private $timeFormat;
-	private $longTimeFormat;
-	private $dateTimeFormat;
-	private $longDateTimeFormat;
+	private $dateSeparator;
 	
 	function __construct( $encoding = null ) {
 		$this->originalMethods = FormatChecker::originalMethods( $this );
 		$this->methods = array();
 		$this->encoding = isset( $encoding ) ? $encoding : Encoding::DEFAULT_ENCODING;
 		$this->decimalPlacesSeparator = '.';
-		$this->dateFormat = 'm/d/Y';
-		$this->timeFormat = 'H:i';
-		$this->longTimeFormat = 'H:i:s';
-		$this->dateTimeFormat = 'm/d/Y H:i';
-		$this->longDateTimeFormat = 'm/d/Y H:i:s';
+		$this->dateSeparator = '/';
 	}
 	
 	// METHOD HANDLING
@@ -130,42 +131,14 @@ class FormatChecker {
 		return $this->decimalPlacesSeparator;
 	}
 	
-	function dateFormat( $dateFormat = null ) { // getter/setter
-		if ( isset( $dateFormat ) ) {
-			$this->dateFormat = $dateFormat;
+	function dateSeparator( $separator = null ) { // getter/setter
+		if ( isset( $separator ) ) {
+			$this->dateSeparator = $separator;
 		}
-		return $this->dateFormat;
+		return $this->dateSeparator;
 	}
 	
-	function timeFormat( $timeFormat = null ) { // getter/setter
-		if ( isset( $timeFormat ) ) {
-			$this->timeFormat = $timeFormat;
-		}
-		return $this->timeFormat;
-	}
-	
-	function longTimeFormat( $longTimeFormat = null ) { // getter/setter
-		if ( isset( $longTimeFormat ) ) {
-			$this->longTimeFormat = $longTimeFormat;
-		}
-		return $this->longTimeFormat;
-	}
-	
-	function dateTimeFormat( $dateTimeFormat = null ) { // getter/setter
-		if ( isset( $dateTimeFormat ) ) {
-			$this->dateTimeFormat = $dateTimeFormat;
-		}
-		return $this->dateTimeFormat;
-	}
-
-	function longDateTimeFormat( $longDateTimeFormat = null ) { // getter/setter
-		if ( isset( $longDateTimeFormat ) ) {
-			$this->longDateTimeFormat = $longDateTimeFormat;
-		}
-		return $this->longDateTimeFormat;
-	}
-	
-	protected function decimalPlacesSeparatorAsString() {
+	function decimalPlacesSeparatorAsString() {
 		return is_array( $this->decimalPlacesSeparator )
 			? implode( '', $this->decimalPlacesSeparator )
 			: $this->decimalPlacesSeparator;
@@ -225,74 +198,86 @@ class FormatChecker {
 		return $this->matches( '^[[:digit:]]*[' . $separators . ']{0,1}[][[:digit:]]{1,3}$', $value );
 	}
 	
-	function _date_ymd( $value ) {
-		if ( empty( $value ) ) { return true; }		
-		return $this->matchesDateRegEx( array( 'y', 'm', 'd' ), '/', $value );
-	}
+	// DATE
 	
-	function _date_mdy( $value ) {
+	function _date_ymd( $value, $separator = null ) {
 		if ( empty( $value ) ) { return true; }
-		return $this->matchesDateRegEx( array( 'm', 'd', 'y' ), '/', $value );
+		return $this->matchesDateRegEx( array( 'y', 'm', 'd' ), $separator, $value );
 	}
 	
-	function _date_dmy( $value ) {
+	function _date_mdy( $value, $separator = null ) {
 		if ( empty( $value ) ) { return true; }
-		return $this->matchesDateRegEx( array( 'd', 'm', 'y' ), '/', $value );
+		return $this->matchesDateRegEx( array( 'm', 'd', 'y' ), $separator, $value );
 	}
 	
-	function _date_ymd_dotted( $value ) {
+	function _date_dmy( $value, $separator = null ) {
 		if ( empty( $value ) ) { return true; }
-		return $this->matchesDateRegEx( array( 'y', 'm', 'd' ), '.', $value );
+		return $this->matchesDateRegEx( array( 'd', 'm', 'y' ), $separator, $value );
 	}
 	
-	function _date_mdy_dotted( $value ) {
-		if ( empty( $value ) ) { return true; }
-		return $this->matchesDateRegEx( array( 'm', 'd', 'y' ), '.', $value );
+	function _date( $value, $separator = null ) {
+		return $this->_date_dmy( $value, $separator );
 	}
 	
-	function _date_dmy_dotted( $value ) {
-		if ( empty( $value ) ) { return true; }
-		return $this->matchesDateRegEx( array( 'd', 'm', 'y' ), '.', $value );
-	}
-	
-	function _date_ymd_dashed( $value ) {
-		if ( empty( $value ) ) { return true; }
-		return $this->matchesDateRegEx( array( 'y', 'm', 'd' ), '-', $value );
-	}
-	
-	function _date_mdy_dashed( $value ) {
-		if ( empty( $value ) ) { return true; }
-		return $this->matchesDateRegEx( array( 'm', 'd', 'y' ), '-', $value );
-	}
-	
-	function _date_dmy_dashed( $value ) {
-		if ( empty( $value ) ) { return true; }
-		return $this->matchesDateRegEx( array( 'd', 'm', 'y' ), '-', $value );
-	}
-	
-	function _date( $value ) {
-		return $this->checkDateTime( $this->dateFormat, $value );
-	}
+	// TIME
 	
 	function _time( $value ) {
-		//if ( empty( $value ) ) { return true; }
-		//return $this->matches( '^([01]?[0-9]|2[0-3]):[0-5][0-9]$', $value );
-		return $this->checkDateTime( $this->timeFormat, $value );
+		if ( empty( $value ) ) { return true; }
+		return $this->matches( '^([01]?[0-9]|2[0-3]):[0-5][0-9]$', $value );
 	}
 	
 	function _longtime( $value ) {
-		//if ( empty( $value ) ) { return true; }
-		//return $this->matches( '^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$', $value );
-		return $this->checkDateTime( $this->longTimeFormat, $value );
+		if ( empty( $value ) ) { return true; }
+		return $this->matches( '^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$', $value );
 	}
 	
-	function _datetime( $value ) {
-		return $this->checkDateTime( $this->dateTimeFormat, $value );
+	// DATETIME
+	
+	function _datetime_ymd( $value, $separator = null ) {
+		return $this->checkDatetime( $value, $separator, array( 'y', 'm', 'd' ) );
 	}
 	
-	function _longdatetime( $value ) {
-		return $this->checkDateTime( $this->longDateTimeFormat, $value );
-	}	
+	function _datetime_mdy( $value, $separator = null ) {
+		return $this->checkDatetime( $value, $separator, array( 'm', 'd', 'y' ) );
+	}
+	
+	function _datetime_dmy( $value, $separator = null ) {
+		return $this->checkDatetime( $value, $separator, array( 'd', 'm', 'y' ) );
+	}
+	
+	function _datetime( $value, $separator = null ) {
+		return $this->_datetime_dmy( $value, $separator );
+	}
+	
+	private function checkDatetime( $value, $separator, $order, $longTime = false ) {
+		if ( empty( $value ) ) { return true; }
+		$pieces = explode( ' ', $value );
+		if ( count( $pieces ) !== 2 ) { return false; }
+		$date = $pieces[ 0 ];
+		$time = $pieces[ 1 ];
+		return $this->matchesDateRegEx( $order, $separator, $date )
+			&& ( true === $longTime ? $this->_longtime( $time ) : $this->_time( $time ) );
+	}
+	
+	// LONGDATETIME
+
+	function _longdatetime_ymd( $value, $separator = null ) {
+		return $this->checkDatetime( $value, $separator, array( 'y', 'm', 'd' ), true );
+	}
+	
+	function _longdatetime_mdy( $value, $separator = null ) {
+		return $this->checkDatetime( $value, $separator, array( 'm', 'd', 'y' ), true );
+	}
+	
+	function _longdatetime_dmy( $value, $separator = null ) {
+		return $this->checkDatetime( $value, $separator, array( 'd', 'm', 'y' ), true );
+	}
+	
+	function _longdatetime( $value, $separator = null ) {
+		return $this->_longdatetime_dmy( $value, $separator );
+	}
+	
+	// WEB
 	
 	function _email( $value ) {
 		if ( empty( $value ) ) { return true; }
@@ -331,16 +316,6 @@ class FormatChecker {
 		return 1 === preg_match( '/'. $regex . '/' . $u, $value );
 	}
 	
-	private function checkDateTime( $format, $value ) {
-		if ( empty( $value ) ) { return true; }		
-		try {
-			\DateTime::createFromFormat( $format, $value );
-			return true;
-		} catch ( \Exception $e ) {
-			return false;
-		}
-	}
-	
 	private function dateRegEx( array $order, $separator ) {
 		$expressions = array(
 			'y' => '[0-9]{1,4}',
@@ -357,11 +332,12 @@ class FormatChecker {
 	}
 	
 	private function matchesDateRegEx( array $order, $separator, $value ) {
-		$regex = $this->dateRegEx( $order, "\\" . $separator );
+		$sep = null === $separator ? $this->dateSeparator : $separator;
+		$regex = $this->dateRegEx( $order, "\\" . $sep );
 		if ( ! $this->matches( $regex, $value ) ) {
 			return false;
 		}
-		$pieces = explode( $separator, $value );
+		$pieces = explode( $sep, $value );
 		$date = array();
 		foreach ( $order as $k => $v ) {
 			$date[ $v ] = $pieces[ $k ];

@@ -56,27 +56,27 @@ echo isset( $problems[ 'myRule' ] ) ? 'myRule as hurt' : 'passed';
 - [x] `anything`
 - [x] `name`
 - [x] `word`
-- [x] `alphanumeric`*
-- [x] `alpha only`*
-- [x] `ascii`*
+- [x] `alphanumeric`
+- [x] `alpha only`
+- [x] `ascii`
 - [x] `numeric`
 - [x] `integer`
 - [x] `price`
 - [x] `tax`
+- [x] `date` (equals to `date_dmy`)
 - [x] `date_dmy`
 - [x] `date_mdy`
 - [x] `date_ymd`
-- [x] `date_dmy_dotted`
-- [x] `date_mdy_dotted`
-- [x] `date_ymd_dotted`
-- [x] `date_dmy_dashed`
-- [x] `date_mdy_dashed`
-- [x] `date_ymd_dashed`
-- [x] `date`**
-- [x] `time`**
-- [x] `longtime`**
-- [x] `datetime`**
-- [x] `longdatetime`**
+- [x] `time`
+- [x] `longtime`
+- [x] `datetime` (equals to `datetime_dmy`)
+- [x] `datetime_dmy`
+- [x] `datetime_mdy`
+- [x] `datetime_ymd`
+- [x] `longdatetime` (equals to `longdatetime_dmy`)
+- [x] `longdatetime_dmy`
+- [x] `longdatetime_mdy`
+- [x] `longdatetime_ymd`
 - [x] `email`
 - [x] `http`
 - [x] `url`
@@ -85,9 +85,7 @@ echo isset( $problems[ 'myRule' ] ) ? 'myRule as hurt' : 'passed';
 - [x] `ipv6`
 - [x] custom: you can add others easily. See below.
 
-_\* Not fully tested, but it should work._
-
-_** Not fully tested, and it will change soon._
+You may specify the separator for date-based formats. Default is "/", for example "31/12/1999".
 
 #### Adding a custom rule
 
@@ -109,22 +107,25 @@ echo isset( $problems[ Rule::FORMAT ] ) ? 'myFormat as hurt' : 'passed';
 
 ### Message Replacements
 
-- [x] **any rule** (i.e.: `{min_length}`, `{max_value}`, etc.): shows the rule value.
-- [x] `{min_value}` and `{max_value}` are also available when `{value_range}` is defined.
-- [x] `{min_length}` and `{max_length}` are also available when `{length_range}` is defined.
-- [x] `{label}` shows the defined replacement for array keys or object field names.
+- [x] `{min_length}` shows the minimum length;
+- [x] `{max_length}` shows the maximum length;
+- [x] `{length_range}` shows the minimum and the maximum length;
+- [x] `{min_value}` shows the minimum value;
+- [x] `{max_value}` shows the maximum value;
+- [x] `{value_range}` shows minimum and maximum values;
+- [x] `{min_value}` and `{max_value}` are also available when the `{value_range}` is used;
+- [x] `{min_length}` and `{max_length}` are also available when the `{length_range}` is used;
+- [x] `{regex}` shows the defined regex;
+- [x] `{label}` shows the defined label (if defined). Otherwise, shows the array key or object attribute name;
 - [x] `{value}` shows the value.
 
 ### More
 
 - [x] Supports UTF-8 and other common formats (ISO-8859-1, Windows-1251, ASCII, etc.)
 - [x] Error messages and formats can be specified by locale.
-- [x] Error messages and formats can be specified at once, and thus read them from a JSON file.
+- [x] Error messages and formats can be specified at once. This allows you, for example, read them from a JSON file.
 - [x] Formats and rules can be specified without having to extend any class.
 - [x] Classes use a [fluent interface](https://en.wikipedia.org/wiki/Fluent_interface) (that is, you type less).
-- [x] Can check a single value.
-- [x] Can check a value array.
-- [x] Can check an object.
 - [ ] Builder classes available (soon)
 
 ## Tests
