@@ -118,11 +118,18 @@ echo isset( $problems[ Rule::FORMAT ] ) ? 'myFormat as hurt' : 'passed';
 - [x] `{min_value}` shows the minimum value;
 - [x] `{max_value}` shows the maximum value;
 - [x] `{value_range}` shows minimum and maximum values;
-- [x] `{min_value}` and `{max_value}` are also available when the `{value_range}` is used;
-- [x] `{min_length}` and `{max_length}` are also available when the `{length_range}` is used;
+- [x] `{min_count}` shows the minimum count;
+- [x] `{max_count}` shows the maximum count;
+- [x] `{count_range}` shows the minimum count and the maximum count;
 - [x] `{regex}` shows the defined regex;
-- [x] `{label}` shows the defined label (if defined). Otherwise, shows the array key or object attribute name;
+- [x] `{label}` shows the defined label, if defined. Otherwise, shows the array key or object attribute name;
 - [x] `{value}` shows the value.
+
+Notes:
+
+- [x] `{min_value}` and `{max_value}` are available when the `{value_range}` is used;
+- [x] `{min_length}` and `{max_length}` are available when the `{length_range}` is used;
+- [x] `{min_count}` and `{max_count}` are available when the `{count_range}` is used.
 
 ### More
 
