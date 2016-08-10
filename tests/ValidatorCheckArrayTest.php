@@ -153,6 +153,41 @@ class ValidatorCheckArrayTest extends PHPUnit_Framework_TestCase {
 		$expected = '5';
 		$got = $problems[ 'foo' ][ Rule::VALUE_RANGE ];
 		$this->assertEquals( $expected, $got );
+	}
+	
+	function test_validates_array_values() {
+		$values = array(
+			'foo' => array( 100, 200 )
+			);
+		$rules = array(
+			'foo' => array( Rule::MAX_COUNT => 1 )
+			);
+		$problems = $this->vd->checkArray( $values, $rules );	
+		$this->assertTrue( isset( $problems[ 'foo' ] ) );
 	}	
+	
+	function test_validates_sub_rules_using_with() {
+		
+		$values = array(
+			'foo' => 0,
+			'bar' => array( 'val' => 10 )
+			);
+		
+		$rules = array(
+			'foo' => array( Rule::VALUE_RANGE => array( 5, 10 )  ),
+			'bar' => array(
+					Rule::WITH => array(
+						'val' => array( Rule::MAX_VALUE => 9 )
+					)
+				)
+			);
+		$problems = $this->vd->checkArray( $values, $rules );
+		
+		//echo 'Returned problems: '; var_dump( $problems );
+		
+		$this->assertTrue( isset( $problems[ 'foo' ] ) );
+		$this->assertTrue( isset( $problems[ 'bar' ] ) );
+		$this->assertTrue( isset( $problems[ 'bar' ][ 'val' ] ) );
+	}
 	
 }

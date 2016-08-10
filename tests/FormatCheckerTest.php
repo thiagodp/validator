@@ -1,8 +1,6 @@
 <?php
 namespace phputil\tests;
 
-require_once 'lib/FormatChecker.php'; // phpunit will be executed from the project root
-
 use PHPUnit_Framework_TestCase;
 use phputil\FormatChecker;
 
@@ -33,16 +31,19 @@ class FormatCheckerTest extends PHPUnit_Framework_TestCase {
 	}
 
 	
-	function test_anything() {
+	function test_anything( $name = '_anything' ) {
 		$expectations = array(
 			''						=> true,
 			' '						=> true,
 			". -,A$*@  45!\n\t\r'"	=> true
 			);
 		
-		$this->verify_characters( $expectations, '_anything' );
+		$this->verify_characters( $expectations, $name );
 	}
 	
+	function test_string() {
+		$this->test_anything( '_string' );
+	}
 	
 	function test_name() {
 		$expectations = array(	
@@ -209,15 +210,45 @@ class FormatCheckerTest extends PHPUnit_Framework_TestCase {
 			'-1e-5'		=> false,	// power notation			
 			// PASS 
 			''			=> true,
+			'-1'		=> true,	// signed negative			
 			'0'			=> true,
-			'-1'		=> true		// signed negative
+			'1'			=> true,	// positive
 			);
 		
 		$this->verify_characters( $expectations, '_integer' );
 	}
 	
+	function test_natural() {
+		$expectations = array(
+			// FAILS
+			' '			=> false,
+			'.'			=> false,			
+			'$#!@'		=> false,
+			"\n"		=> false,	// Unix EOL
+			"\r\n"		=> false,	// Win EOL
+			"\r"		=> false,	// Mac EOL
+			'A'			=> false,
+			'.0'		=> false,	// decimal separator
+			'-.0'		=> false,	// signed negative + decimal separator
+			'+.0'		=> false,	// signed positive + decimal separator			
+			'+1.0'		=> false,	// signed positive + decimal separator
+			'-1.0'		=> false,	// signed negative + decimal separator			
+			'+1'		=> false,	// signed positive
+			'1e5'		=> false,	// power notation
+			'-1e5'		=> false,	// power notation
+			'1e-5'		=> false,	// power notation
+			'-1e-5'		=> false,	// power notation			
+			'-1'		=> false,	// signed negative
+			// PASS 
+			''			=> true,
+			'0'			=> true,
+			'1'			=> true,
+			);
+		
+		$this->verify_characters( $expectations, '_natural' );
+	}
 	
-	function test_price() {
+	function test_monetary( $name = '_monetary' ) {
 		$expectations = array(
 			// FAILS
 			' '			=> false,
@@ -246,9 +277,12 @@ class FormatCheckerTest extends PHPUnit_Framework_TestCase {
 			'1.00'		=> true,	// 2 decimal places
 			);
 		
-		$this->verify_characters( $expectations, '_price' );
+		$this->verify_characters( $expectations, $name );		
 	}
-
+	
+	function test_price() {
+		$this->test_monetary( '_price' );
+	}
 
 	function test_tax() {
 		$expectations = array(

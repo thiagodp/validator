@@ -9,14 +9,23 @@ namespace phputil;
 class Rule {
 	
 	const REQUIRED		= 'required';
+	
 	const MIN_LENGTH	= 'min_length';
 	const MAX_LENGTH	= 'max_length';
 	const LENGTH_RANGE	= 'length_range';
+	
 	const MIN_VALUE		= 'min_value';
 	const MAX_VALUE		= 'max_value';
 	const VALUE_RANGE	= 'value_range';
+	
+	const MIN_COUNT		= 'min_count';
+	const MAX_COUNT		= 'max_count';
+	const COUNT_RANGE	= 'count_range';
+	
 	const REGEX			= 'regex';
 	const FORMAT		= 'format';
+	
+	const WITH			= 'with';
 	
     static function all() {
         return array_values( ( new \ReflectionClass( __CLASS__ ) )->getConstants() );
@@ -138,6 +147,24 @@ class RuleChecker {
 		$max = $array[ 1 ];
 		return $this->min_value( $value, $min ) && $this->max_value( $value, $max );		
 	}
+	
+	function min_count( $value, $ruleValue ) {
+		return is_array( $value ) && count( $value ) >= $ruleValue;
+	}
+	
+	function max_count( $value, $ruleValue ) {
+		return is_array( $value ) && count( $value ) <= $ruleValue;
+	}
+	
+	function count_range( $value, $ruleValue ) {
+		if ( ! is_array( $ruleValue ) ) {
+			return $value === $ruleValue;
+		}
+		$array = $this->rangeValues( $ruleValue );
+		$min = $array[ 0 ];
+		$max = $array[ 1 ];
+		return $this->min_count( $value, $min ) && $this->max_count( $value, $max );		
+	}	
 	
 	function regex( $value, $ruleValue ) {
 		return 1 === preg_match( $ruleValue, $value );

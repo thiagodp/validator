@@ -9,15 +9,21 @@ namespace phputil;
 class Format {
 	
 	const ANYTHING			= 'anything';
+	const STRING			= 'string';				// same as "anything"
 	const NAME				= 'name';				// alpha, space, dot, dash
 	const WORD				= 'word';				// alpha, underline
 	const ALPHA_NUMERIC		= 'alphanumeric';		// alpha, number
 	const ALPHA				= 'alpha';				// just alpha
 	const ASCII				= 'ascii';				// character codes 0-127
+	
 	const NUMERIC			= 'numeric';			// number
 	const INTEGER			= 'integer';
+	const NATURAL			= 'natural';			// integer >= 0	
+	const DOUBLE			= 'double';
+	const FLOAT				= 'float';				// same as "double"
 	
-	const PRICE				= 'price';				// numeric(N,2)
+	const MONETARY			= 'monetary';			// numeric(N,2)
+	const PRICE				= 'price';				// same as "monetary"
 	const TAX				= 'tax';				// numeric(N,3)
 	
 	// DATE
@@ -158,6 +164,10 @@ class FormatChecker {
 		return true;
 	}
 	
+	function _string( $value ) {
+		return true;
+	}	
+	
 	function _name( $value ) {
 		return $this->matches( '^([[:alpha:]]{2,}((( )|(\.)|(\-)|(\')|(\. ))?[[:alpha:]]+\.?)*){0,1}$', $value );
 	}
@@ -186,10 +196,26 @@ class FormatChecker {
 		return empty( $value ) || is_integer( $value );
 	}
 	
-	function _price( $value ) {
+	function _natural( $value ) {
+		return empty( $value ) || ( is_integer( $value ) && $value >= 0 );
+	}	
+	
+	function _double( $value ) {
+		return empty( $value ) || is_double( $value );
+	}
+	
+	function _float( $value ) {
+		return empty( $value ) || is_float( $value );
+	}
+	
+	function _monetary( $value ) {
 		if ( empty( $value ) ) { return true; }
 		$separators = $this->decimalPlacesSeparatorAsString();
-		return $this->matches( '^[[:digit:]]*[' . $separators . ']{0,1}[][[:digit:]]{1,2}$', $value );
+		return $this->matches( '^[[:digit:]]*[' . $separators . ']{0,1}[][[:digit:]]{1,2}$', $value );		
+	}
+	
+	function _price( $value ) {
+		return $this->_monetary( $value );
 	}
 	
 	function _tax( $value ) {
@@ -309,7 +335,7 @@ class FormatChecker {
 		return $this->matches( '^(?:[A-Fa-f0-9]{1,4}:){7}[A-Fa-f0-9]{1,4}$', $value );
 	}
 	
-	// OTHER
+	// INTERNAL
 	
 	protected function matches( $regex, $value ) {
 		$u = $this->encodingRegExSymbol();		

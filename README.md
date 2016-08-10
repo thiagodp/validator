@@ -30,8 +30,12 @@ We use it to be able to retrieve private and protected values from non-`stdClass
 - [x] `min_value`
 - [x] `max_value`
 - [x] `value_range`
+- [x] `min_count`
+- [x] `max_count`
+- [x] `count_range`
 - [x] `regex`
 - [x] `format`
+- [x] `with`: allows to define rules for subarrays or subobjects.
 - [x] **custom**: you can add others easily. See below.
 
 #### Adding a custom rule
@@ -51,14 +55,18 @@ echo isset( $problems[ 'myRule' ] ) ? 'myRule as hurt' : 'passed';
 ### Available Formats
 
 - [x] `anything`
+- [x] `string` (same as `anything`)
 - [x] `name`
 - [x] `word`
 - [x] `alphanumeric`
-- [x] `alpha only`
+- [x] `alpha`
 - [x] `ascii`
 - [x] `numeric`
 - [x] `integer`
-- [x] `price`
+- [x] `double`
+- [x] `float` (same as `double`)
+- [x] `monetary`
+- [x] `price` (same as `monetary`)
 - [x] `tax`
 - [x] `date` (equals to `date_dmy`)
 - [x] `date_dmy`

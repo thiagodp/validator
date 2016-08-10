@@ -1,9 +1,10 @@
 <?php
 namespace phputil\tests;
 
-require_once 'lib/MessageHandler.php'; // phpunit will be executed from the project root
+require_once 'vendor/autoload.php';
 
 use PHPUnit_Framework_TestCase;
+
 use phputil\MessageHandler;
 
 /**

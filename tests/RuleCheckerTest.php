@@ -1,10 +1,10 @@
 <?php
 namespace phputil\tests;
 
-require_once 'lib/FormatChecker.php';
-require_once 'lib/RuleChecker.php';
+require_once 'vendor/autoload.php';
 
 use PHPUnit_Framework_TestCase;
+
 use phputil\FormatChecker;
 use phputil\RuleChecker;
 use phputil\FormatOption;
@@ -31,7 +31,7 @@ class RuleCheckerTest extends PHPUnit_Framework_TestCase {
 		$this->rc = new RuleChecker( $this->fc );
 	}
 	
-	// METHOD HANDLING ________________________________________________________
+	// METHOD HANDLING
 	
 	function test_can_add_a_method() {
 		$dummy = new Dummy();
@@ -54,7 +54,7 @@ class RuleCheckerTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue( $exists );
 	}	
 	
-	// RULES __________________________________________________________________
+	// RULES
 	
 	// Required
 	
@@ -110,37 +110,37 @@ class RuleCheckerTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue( $this->rc->length_range( '123', array( 2, 4 ) ) );
 	}
 	
-	// Min
+	// Min Value
 	
-	function test_min_returns_false_when_value_is_lower() {
+	function test_min_value_returns_false_when_value_is_lower() {
 		$this->assertFalse( $this->rc->min_value( 9, 10 ) );
 	}
 	
-	function test_min_returns_true_when_value_is_equal() {
+	function test_min_value_returns_true_when_value_is_equal() {
 		$this->assertTrue( $this->rc->min_value( 10, 10 ) );
 	}
 	
-	function test_min_returns_true_when_value_is_greater() {
+	function test_min_value_returns_true_when_value_is_greater() {
 		$this->assertTrue( $this->rc->min_value( 11, 10 ) );
 	}
 	
-	// Max
+	// Max Value
 	
-	function test_max_returns_false_when_value_is_greater() {
+	function test_max_value_returns_false_when_value_is_greater() {
 		$this->assertFalse( $this->rc->max_value( 10, 9 ) );
 	}
 	
-	function test_max_returns_true_when_value_is_equal() {
+	function test_max_value_returns_true_when_value_is_equal() {
 		$this->assertTrue( $this->rc->max_value( 10, 10 ) );
 	}
 	
-	function test_max_returns_true_when_value_is_lower() {
+	function test_max_value_returns_true_when_value_is_lower() {
 		$this->assertTrue( $this->rc->max_value( 9, 10 ) );
 	}
 	
-	// Range
+	// Value Range
 	
-	function test_range_returns_false_when_value_is_out_of_range() {
+	function test_value_range_returns_false_when_value_is_out_of_range() {
 		$this->assertFalse( $this->rc->value_range( 9, array( 10, 20 ) ) );
 		$this->assertFalse( $this->rc->value_range( 21, array( 10, 20 ) ) );
 	}
@@ -153,6 +153,50 @@ class RuleCheckerTest extends PHPUnit_Framework_TestCase {
 	function test_range_returns_true_when_value_is_inside_range() {
 		$this->assertTrue( $this->rc->value_range( 15, array( 10, 20 ) ) );
 	}
+	
+	// Min Count
+	
+	function test_min_count_returns_true_when_value_is_greater() {
+		$this->assertTrue( $this->rc->min_count( array( 'a', 'b' ), 1 ) );
+	}
+	
+	function test_min_count_returns_true_when_value_is_equal() {
+		$this->assertTrue( $this->rc->min_count( array( 'a' ), 1 ) );
+	}
+	
+	function test_min_count_returns_false_when_value_is_lower() {
+		$this->assertFalse( $this->rc->min_count( array(), 1 ) );
+	}	
+	
+	// Max Count
+	
+	function test_max_count_returns_false_when_value_is_greater() {
+		$this->assertFalse( $this->rc->max_count( array( 'a', 'b' ), 1 ) );
+	}
+	
+	function test_max_count_returns_true_when_value_is_equal() {
+		$this->assertTrue( $this->rc->max_count( array( 'a' ), 1 ) );
+	}
+	
+	function test_max_count_returns_true_when_value_is_lower() {
+		$this->assertTrue( $this->rc->max_count( array(), 1 ) );
+	}	
+	
+	// Count Range
+	
+	function test_count_range_returns_false_when_value_is_out_of_range() {
+		$this->assertFalse( $this->rc->count_range( array(), array( 1, 2 ) ) );
+		$this->assertFalse( $this->rc->count_range( array( 'a', 'b', 'c' ), array( 1, 2 ) ) );
+	}
+	
+	function test_count_range_returns_true_when_value_is_in_the_boundaries() {
+		$this->assertTrue( $this->rc->count_range( array( 'a'), array( 1, 2 ) ) );
+		$this->assertTrue( $this->rc->count_range( array( 'a', 'b' ), array( 1, 2 ) ) );
+	}
+	
+	function test_count_range_returns_true_when_value_is_inside_range() {
+		$this->assertTrue( $this->rc->count_range( array( 'a', 'b' ), array( 1, 3 ) ) );
+	}	
 	
 	// RegEx
 	

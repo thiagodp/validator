@@ -240,15 +240,62 @@ class Validator {
 	function checkArray( array $valuesMap, array $fieldToRulesMap ) {
 		$allRules = $this->rules();
 		$problems = array();
+		$this->performArrayCheck( $valuesMap, $fieldToRulesMap, $allRules, $problems );
+		return $problems;
+	}
+	
+	
+	private function performArrayCheck(
+		array $valuesMap
+		, array $fieldToRulesMap
+		, array $allRules
+		, array &$problems
+		) {
+		
 		foreach ( $fieldToRulesMap as $field => $rules ) {
+			
 			$value = array_key_exists( $field, $valuesMap ) ? $valuesMap[ $field ] : '';
 			$label = isset( $rules[ Option::LABEL ] ) ? $rules[ Option::LABEL ] : $field;
-			$p = $this->check( $value, $rules, $label );
-			if ( ! empty( $p ) ) {
-				$problems[ $field ] = $p;
+			
+			$fieldProblems = array();
+			foreach ( $rules as $k => $v ) {
+				
+				if ( Rule::WITH == $k ) {				
+					
+					if ( ! array_key_exists( $field, $problems ) ) {
+						$problems[ $field ] = array();
+					}
+					
+					$this->performArrayCheck(
+						(array) $valuesMap[ $field ]
+						, $v
+						, $allRules
+						, $problems[ $field ]
+						);
+						
+					if ( empty( $problems[ $field ] ) ) {
+						unset( $problems[ $field ] );
+					}
+						
+					continue;
+				}
+				
+				if ( ! isset( $allRules[ $k ] ) ) {
+					continue;
+				}			
+				
+				// Calls a method of RuleChecker (or a user-defined rule method)
+				$result = call_user_func( $allRules[ $k ], $value, $rules[ $k ] );
+				if ( ! $result ) {
+					$fieldProblems[ $k ] = $this->messageHandler->format(
+						$value, $k, $rules, $this->locale(), $label );
+				}
 			}
-		}
-		return $problems;
+			
+			if ( ! empty( $fieldProblems ) ) {
+				$problems[ $field ] = $fieldProblems;
+			}
+		}		
 	}
 	
 
@@ -273,7 +320,7 @@ class Validator {
 			$getterPrefix = 'get',
 			$useCamelCase = true
 			) {
-		$array = $this->toArray( $object );
+		$array = (array) $this->toArray( $object );
 		return $this->checkArray( $array, $attrToRulesMap );
 	}		
 	
@@ -296,7 +343,8 @@ class Validator {
 	/** @return array */
 	private function toArray( $obj ) {
 		if ( is_object( $obj ) && 'stdClass' != get_class( $obj ) ) {
-			return RTTI::getAttributes( $obj, RTTI::allFlags() );
+			$values = RTTI::getAttributes( $obj, RTTI::allFlags() );
+			return $values;
 		}
 		return (array) $obj;
 	}
