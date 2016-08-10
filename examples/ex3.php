@@ -6,7 +6,11 @@ use \phputil\Rule;
 use \phputil\Option;
 use \phputil\Format;
 
-// Example 2
+//
+// Example 3
+//
+// Tip: We recommend that you see ex2.php before reading this file.
+//
 
 //
 // Validating an object of stdClass (dynamic object)
