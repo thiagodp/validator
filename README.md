@@ -30,12 +30,12 @@ We use it to be able to retrieve private and protected values from non-`stdClass
 - [x] `min_value`
 - [x] `max_value`
 - [x] `value_range`
-- [x] `min_count`
-- [x] `max_count`
-- [x] `count_range`
+- [x] `min_count` (for arrays)
+- [x] `max_count` (for arrays)
+- [x] `count_range` (for arrays)
 - [x] `regex`
-- [x] `format`
-- [x] `with`: allows to define rules for subarrays or subobjects.
+- [x] `format`: allows to use a format (see [Available Formats](#available-formats))
+- [x] `with`: allows to define rules for sub-arrays or sub-objects.
 - [x] **custom**: you can add others easily. See below.
 
 #### Adding a custom rule
