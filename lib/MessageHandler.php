@@ -118,12 +118,12 @@ class MessageHandler {
 		//print_r( $matches ); die();
 		
 		// When a "length_range" rule is found, includes the parsing
-		// of "min_length" and "max_length". When a "value_range" is
-		// found, includes the parsing of "min_value" and "max_value".
-		// The parsing is included by including the rule.
+		// of "min_length" and "max_length". The same applies to similar
+		// rules.
 		$ranges = array(
 			'length_range' => array( 'min_length', 'max_length' )
 			, 'value_range' => array( 'min_value', 'max_value' )
+			, 'count_range' => array( 'min_count', 'max_count' )
 			);
 		foreach ( $ranges as $rKey => $rValue ) {
 			if ( ! isset( $rules[ $rKey ] ) ) { continue; }
