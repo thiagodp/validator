@@ -14,6 +14,84 @@ composer require phputil/validator
 Dependends only on [phputil/rtti](https://github.com/thiagodp/rtti).
 We use it to be able to retrieve private and protected values from non-`stdClass` objects.
 
+## An Example
+
+A step-by-step example for demonstrating its use.
+```php
+// Suppose that your application receives an object in a JSON like this:
+$json = <<<EXAMPLE
+{
+	"name": "Bob Developer",
+	"likes": 150,
+	"phone": { "number": "99988-7766", "notes": "WhatsApp, Telegram" },
+	"friends": [ "Suzan", "Mike", "Jane" ]
+}
+EXAMPLE;
+// So you transform the JSON into an object
+$obj = json_decode( $json );
+// Now you want to validate this object, and you create a Validator
+$validator = new Validator();
+// And define the rules
+$rules = array(
+	// name must have from 2 to 60 characters
+	'name' => array( Rule::LENGTH_RANGE => array( 2, 60 ), Option::LABEL => 'Name' ),
+	// likes must be greater or equal to zero
+	'likes' => array( Rule::MIN_VAUE => 0 ),
+	// for the phone...
+	'phone' => array( Rule::WITH => array(
+		// number must follow a regex
+		'number' => array(
+			Rule::REGEX => '/^[0-9]{5}\\-[0-9]{4}$/',
+			Option::LABEL => 'Phone Number'
+			)
+	) ),
+	// have a friend limit
+	'friends' => array( Rule::MAX_COUNT => 100 )
+);
+// And define the messages (we also could load it from a JSON file)
+$messages = array(
+	Rule::LENGTH_RANGE => '{label} must have from {min_length} to {max_length} characters.',
+	Rule::MIN_VAUE => '{label} must be greater than or equal to {min_value}.',
+	Rule::REGEX => '{label} has an invalid format.',
+	Rule::MAX_COUNT => '{label} must have up to {max_count} item(s).',
+	);
+$validator->setMessages( $messages );
+
+// Now we will check the object using our rules
+$problems = $validator->checkObject( $obj, $rules );
+// In this moment, problems will be an empty array because all values passed.
+// That is: $problems === array()
+
+// However, lets make our rules harder, just to understand how the validation works
+$rules[ 'name' ][ Rule::LENGTH_RANGE ] = array( 2, 5 ); // Max of 5
+$rule[ 'friends' ][ Rule::MAX_COUNT ] = 1; // just one friend (the best one :-)
+
+// And check again
+$problems = $validator->checkObject( $obj, $rules );
+// Now $problems is an array like this:
+// array(
+//	'name' => array( 'length_range' => 'Name must have from 2 to 5 characters.' ),
+//	'friends' => array( 'max_count' => 'friends must have up to 1 item(s)' )
+// )
+// Which means that we have two fields with problems. The format is:
+//  field => hurt rule => message
+// For example, the field "name" hurt the "length_range" rule and its message is
+// "Name must have from 2 to 5 characters.".
+//
+// If we need to know whether "name" has a problem, we just check with isset:
+if ( isset( $problems[ 'name' ] ) ) {
+	echo 'Name has a problem', PHP_EOL;
+}
+// If we are only interested in the messages, and don't care about the fields,
+// we just use the ProblemsTransformer
+$messages = ( new ProblemsTransformer() )->justTheMessages( $problems );
+var_dump( $messages );
+// Will print something like:
+// array( 'Name must have from 2 to 5 characters.', 'friends must have up to 1 item(s)' )
+//
+// That's it for now. Enjoy it!
+```
+
 ## Features
 
 - [x] Validate basic types (see [example 1](https://github.com/thiagodp/validator/tree/master/examples/ex1.php))
