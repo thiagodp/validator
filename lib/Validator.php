@@ -343,7 +343,7 @@ class Validator {
 	/** @return array */
 	private function toArray( $obj ) {
 		if ( is_object( $obj ) && 'stdClass' != get_class( $obj ) ) {
-			$values = RTTI::getAttributes( $obj, RTTI::allFlags() );
+			$values = RTTI::getAttributes( $obj, RTTI::allFlags(), 'get', true, true );
 			return $values;
 		}
 		return (array) $obj;
