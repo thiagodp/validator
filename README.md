@@ -111,13 +111,13 @@ var_dump( $messages );
 - [x] `min_count` (for arrays)
 - [x] `max_count` (for arrays)
 - [x] `count_range` (for arrays)
-- [x] `in`
-- [x] `not_in`
-- [x] `start_with`
-- [x] `not_start_with`
-- [x] `end_with`
-- [x] `not_end_with`
-- [x] `contains`
+- [x] `in` (for arrays)
+- [x] `not_in` (for arrays)
+- [x] `start_with` (accepts a string or an array of strings, compared with "or")
+- [x] `not_start_with` (accepts a string or an array of strings, compared with "or")
+- [x] `end_with` (accepts a string or an array of strings, compared with "or")
+- [x] `not_end_with` (accepts a string or an array of strings, compared with "or")
+- [x] `contains` (accepts a string or an array of strings, compared with "or")
 - [x] `regex`
 - [x] `format`: allows to use a format (see [Available Formats](#available-formats))
 - [x] `with`: allows to define rules for sub-arrays or sub-objects.
@@ -199,13 +199,20 @@ echo isset( $problems[ Rule::FORMAT ] ) ? 'myFormat as hurt' : 'passed';
 
 - [x] `{min_length}` shows the minimum length;
 - [x] `{max_length}` shows the maximum length;
-- [x] `{length_range}` shows the minimum and the maximum length;
+- [x] `{length_range}` shows the minimum and the maximum length (e.g. "5-10");
 - [x] `{min_value}` shows the minimum value;
 - [x] `{max_value}` shows the maximum value;
-- [x] `{value_range}` shows minimum and maximum values;
+- [x] `{value_range}` shows minimum and maximum values (e.g. "5-10");
 - [x] `{min_count}` shows the minimum count;
 - [x] `{max_count}` shows the maximum count;
-- [x] `{count_range}` shows the minimum count and the maximum count;
+- [x] `{count_range}` shows the minimum count and the maximum count (e.g. "5-10");
+- [x] `{in}` shows the set of items separated by comma;
+- [x] `{not_in}` shows the set of items separated by comma;
+- [x] `{start_with}` shows the string or the set of strings separated by comma;
+- [x] `{not_start_with}` shows the string or the set of strings separated by comma;
+- [x] `{end_with}` shows the string or the set of strings separated by comma;
+- [x] `{not_end_with}` shows the string or the set of strings separated by comma;
+- [x] `{contains}` shows the string or the set of strings separated by comma;
 - [x] `{regex}` shows the defined regex;
 - [x] `{label}` shows the defined label, if defined. Otherwise, shows the array key or object attribute name;
 - [x] `{value}` shows the value.
