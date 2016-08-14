@@ -137,7 +137,47 @@ class RuleChecker {
 	
 	function not_in( $value, $ruleValue ) {
 		return ! $this->in( $value, $ruleValue );
-	}	
+	}
+	
+	function start_with( $value, $ruleValue ) {
+		$rule = is_array( $ruleValue ) ? $ruleValue : array( $ruleValue );
+		foreach ( $rule as $r ) {
+			if ( 0 === mb_strpos( $r, $value ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	function not_start_with( $value, $ruleValue ) {
+		return ! $this->start_with( $value, $ruleValue );
+	}
+	
+	function end_with( $value, $ruleValue ) {
+		$rule = is_array( $ruleValue ) ? $ruleValue : array( $ruleValue );
+		$valueLength = mb_strlen( $value );
+		foreach ( $rule as $r ) {
+			$expectedPosition = mb_strlen( $r ) - $valueLength;
+			if ( $expectedPosition === mb_strrpos( $r, $value ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	function not_end_with( $value, $ruleValue ) {
+		return ! $this->end_with( $value, $ruleValue );
+	}
+	
+	function contains( $value, $ruleValue ) {
+		$rule = is_array( $ruleValue ) ? $ruleValue : array( $ruleValue );
+		foreach ( $rule as $r ) {
+			if ( mb_strpos( $r, $value ) !== false ) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	function regex( $value, $ruleValue ) {
 		return 1 === preg_match( $ruleValue, $value );

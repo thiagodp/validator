@@ -113,6 +113,11 @@ var_dump( $messages );
 - [x] `count_range` (for arrays)
 - [x] `in`
 - [x] `not_in`
+- [x] `start_with`
+- [x] `not_start_with`
+- [x] `end_with`
+- [x] `not_end_with`
+- [x] `contains`
 - [x] `regex`
 - [x] `format`: allows to use a format (see [Available Formats](#available-formats))
 - [x] `with`: allows to define rules for sub-arrays or sub-objects.
