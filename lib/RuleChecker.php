@@ -2,13 +2,6 @@
 namespace phputil;
 
 /**
- *  Rule exception.
- *  
- *  @author	Thiago Delgado Pinto
- */
-class RuleException extends \Exception {}
-
-/**
  *  Rule checker.
  *  
  *  @author	Thiago Delgado Pinto
