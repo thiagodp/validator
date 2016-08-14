@@ -1,13 +1,13 @@
 <?php
-namespace phputil\tests;
+namespace phputil\validator\tests;
 
 require_once 'vendor/autoload.php';
 
-use PHPUnit_Framework_TestCase;
+use \PHPUnit_Framework_TestCase;
 
-use phputil\FormatChecker;
-use phputil\RuleChecker;
-use phputil\FormatOption;
+use \phputil\validator\FormatChecker;
+use \phputil\validator\RuleChecker;
+use \phputil\validator\FormatOption;
 
 
 /** Class used in some tests */

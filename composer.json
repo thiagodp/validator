@@ -20,6 +20,6 @@
 	"suggest": {
 	},
 	"autoload": {
-		"psr-4": { "phputil\\": "lib/" }
+		"psr-4": { "phputil\\validator\\": "lib/" }
 	}
 }

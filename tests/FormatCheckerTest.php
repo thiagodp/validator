@@ -1,8 +1,11 @@
 <?php
-namespace phputil\tests;
+namespace phputil\validator\tests;
 
-use PHPUnit_Framework_TestCase;
-use phputil\FormatChecker;
+require_once 'vendor/autoload.php';
+
+use \PHPUnit_Framework_TestCase;
+
+use \phputil\validator\FormatChecker;
 
 /**
  * Tests FormatChecker.

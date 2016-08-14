@@ -1,11 +1,11 @@
 <?php
-namespace phputil\tests;
+namespace phputil\validator\tests;
 
 require_once 'vendor/autoload.php';
 
-use PHPUnit_Framework_TestCase;
+use \PHPUnit_Framework_TestCase;
 
-use phputil\MessageHandler;
+use \phputil\validator\MessageHandler;
 
 /**
  * Tests MessageHandler.

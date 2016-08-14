@@ -1,5 +1,7 @@
 <?php
-namespace phputil;
+namespace phputil\validator;
+
+use \phputil\RTTI;
 
 /**
  *  Easy and powerful validator for PHP.

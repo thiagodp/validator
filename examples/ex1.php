@@ -1,10 +1,10 @@
 <?php
 require '../vendor/autoload.php';
 
-use \phputil\Validator;
-use \phputil\Rule;
-use \phputil\Option;
-use \phputil\Format;
+use \phputil\validator\Validator;
+use \phputil\validator\Rule;
+use \phputil\validator\Option;
+use \phputil\validator\Format;
 
 // Example 1
 

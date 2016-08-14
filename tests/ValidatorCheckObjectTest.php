@@ -1,15 +1,15 @@
 <?php
-namespace phputil\tests;
+namespace phputil\validator\tests;
 
 require_once 'vendor/autoload.php';
 
-use PHPUnit_Framework_TestCase;
+use \PHPUnit_Framework_TestCase;
 
-use phputil\Encoding;
-use phputil\Format;
-use phputil\Rule;
-use phputil\Option;
-use phputil\Validator;
+use \phputil\validator\Encoding;
+use \phputil\validator\Format;
+use \phputil\validator\Rule;
+use \phputil\validator\Option;
+use \phputil\validator\Validator;
 
 class Foo {
 	private $x;

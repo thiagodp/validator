@@ -1,5 +1,5 @@
 <?php
-namespace phputil;
+namespace phputil\validator;
 
 /**
  *  Rule checker.
