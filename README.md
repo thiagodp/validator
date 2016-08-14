@@ -111,6 +111,8 @@ var_dump( $messages );
 - [x] `min_count` (for arrays)
 - [x] `max_count` (for arrays)
 - [x] `count_range` (for arrays)
+- [x] `in`
+- [x] `not_in`
 - [x] `regex`
 - [x] `format`: allows to use a format (see [Available Formats](#available-formats))
 - [x] `with`: allows to define rules for sub-arrays or sub-objects.
