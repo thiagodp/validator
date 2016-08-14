@@ -50,11 +50,13 @@ $rules = array(
 );
 // And define the messages (we also could load it from a JSON file)
 $messages = array(
-	Rule::LENGTH_RANGE => '{label} must have from {min_length} to {max_length} characters.',
-	Rule::MIN_VAUE => '{label} must be greater than or equal to {min_value}.',
-	Rule::REGEX => '{label} has an invalid format.',
-	Rule::MAX_COUNT => '{label} must have up to {max_count} item(s).',
-	);
+	'en' => array( // "en" means "english" locale. This is the default locale.
+		Rule::LENGTH_RANGE => '{label} must have from {min_length} to {max_length} characters.',
+		Rule::MIN_VAUE => '{label} must be greater than or equal to {min_value}.',
+		Rule::REGEX => '{label} has an invalid format.',
+		Rule::MAX_COUNT => '{label} must have up to {max_count} item(s).',
+	)
+);
 $validator->setMessages( $messages );
 
 // Now we will check the object using our rules
