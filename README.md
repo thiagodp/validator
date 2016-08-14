@@ -12,7 +12,6 @@ We use [semantic versioning](http://semver.org/). See [our releases](https://git
 composer require phputil/validator
 ```
 Dependends only on [phputil/rtti](https://github.com/thiagodp/rtti).
-We use it to be able to retrieve private and protected values from non-`stdClass` objects.
 
 ## An Example
 
@@ -100,7 +99,7 @@ var_dump( $messages );
 - [x] Validates arrays (see [example 2](https://github.com/thiagodp/validator/tree/master/examples/ex3.php))
 - [x] Validates dynamic objects (`stdClass`) (see [example 3](https://github.com/thiagodp/validator/tree/master/examples/ex3.php))
 - [x] Validates objects (of user-created classes) with private or protected attributes (see  [example 3](https://github.com/thiagodp/validator/tree/master/examples/ex3.php))
-- [x] Supports localized messages (different locales)
+- [x] Supports localized validation messages (different locales)
 - [x] Supports different string formats (UTF, ISO-8859-1, ASCII, etc.)
 
 ### Available Rules
