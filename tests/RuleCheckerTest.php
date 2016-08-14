@@ -196,6 +196,42 @@ class RuleCheckerTest extends PHPUnit_Framework_TestCase {
 	
 	function test_count_range_returns_true_when_value_is_inside_range() {
 		$this->assertTrue( $this->rc->count_range( array( 'a', 'b' ), array( 1, 3 ) ) );
+	}
+	
+	// In
+	
+	function test_in_returns_true_when_non_array_value_is_equal() {
+		$this->assertTrue( $this->rc->in( 100, 100 ) );
+	}
+	
+	function test_in_returns_false_when_non_array_value_is_not_equal() {
+		$this->assertFalse( $this->rc->in( 100, 99 ) );
+	}	
+	
+	function test_in_returns_true_when_in_array() {
+		$this->assertTrue( $this->rc->in( 100, array( 100 ) ) );
+	}
+	
+	function test_in_returns_false_when_not_in_array() {
+		$this->assertFalse( $this->rc->in( 100, array( 99 ) ) );
+	}
+	
+	// Not In
+	
+	function test_not_in_returns_false_when_non_array_value_is_equal() {
+		$this->assertFalse( $this->rc->not_in( 100, 100 ) );
+	}
+	
+	function test_not_in_returns_true_when_non_array_value_is_not_equal() {
+		$this->assertTrue( $this->rc->not_in( 100, 99 ) );
+	}	
+	
+	function test_not_in_returns_false_when_in_array() {
+		$this->assertFalse( $this->rc->not_in( 100, array( 100 ) ) );
+	}
+	
+	function test_not_in_returns_true_when_not_in_array() {
+		$this->assertTrue( $this->rc->not_in( 100, array( 99 ) ) );
 	}	
 	
 	// RegEx

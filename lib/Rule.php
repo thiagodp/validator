@@ -22,6 +22,9 @@ class Rule {
 	const MAX_COUNT		= 'max_count';
 	const COUNT_RANGE	= 'count_range';
 	
+	const IN			= 'in';
+	const NOT_IN		= 'not_in';
+	
 	const REGEX			= 'regex';
 	const FORMAT		= 'format';
 	

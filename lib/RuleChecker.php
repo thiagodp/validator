@@ -126,6 +126,17 @@ class RuleChecker {
 		$min = $array[ 0 ];
 		$max = $array[ 1 ];
 		return $this->min_count( $value, $min ) && $this->max_count( $value, $max );		
+	}
+	
+	function in( $value, $ruleValue ) {
+		if ( ! is_array( $ruleValue ) ) {
+			return $value === $ruleValue;
+		}
+		return in_array( $value, $ruleValue );
+	}
+	
+	function not_in( $value, $ruleValue ) {
+		return ! $this->in( $value, $ruleValue );
 	}	
 	
 	function regex( $value, $ruleValue ) {
