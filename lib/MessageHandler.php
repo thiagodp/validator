@@ -141,10 +141,15 @@ class MessageHandler {
 			$key = str_replace( array( '{', '}' ), '', $v );
 			if ( isset( $rules[ $key ] ) ) {
 				$value = $rules[ $key ];
-				if ( is_array( $value ) ) { // it is a range
-					$v0 = isset( $value[ 0 ] ) ? $value[ 0 ] : '';
-					$v1 = isset( $value[ 1 ] ) ? $value[ 1 ] : '';
-					$value = $v0 . '-' . $v1;
+				if ( is_array( $value ) ) {
+					$isARange = mb_strpos( $key, 'range' ) !== false;
+					if ( $isARange ) {
+						$v0 = isset( $value[ 0 ] ) ? $value[ 0 ] : '';
+						$v1 = isset( $value[ 1 ] ) ? $value[ 1 ] : '';
+						$value = $v0 . '-' . $v1;
+					} else {
+						$value = implode( ', ', $value );
+					}
 				}
 				$msg = str_replace( $v, $value, $msg );
 			}

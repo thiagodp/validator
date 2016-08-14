@@ -52,7 +52,9 @@ class MessageHandlerTest extends PHPUnit_Framework_TestCase {
 		$expected = '';
 		$got = $this->mh->format( 'any value', 'rule key', array() );
 		$this->assertEquals( $expected, $got );
-	}	
+	}
+	
+	// Value
 	
 	function test_format_allows_to_use_the_value() {
 		$value = 'hello';
@@ -75,6 +77,8 @@ class MessageHandlerTest extends PHPUnit_Framework_TestCase {
 		
 		$this->assertEquals( $expected, $got );
 	}
+	
+	// Label
 	
 	function test_format_allows_to_use_a_label_as_string() {
 		$value = 'Bob';
@@ -127,7 +131,53 @@ class MessageHandlerTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $expected, $got );
 	}
 	
-	function test_format_allows_to_use_rules_in_the_message() {
+	// Length Range
+	
+	function test_format_replaces_length_range_with_their_values() {
+		$rules = array( 'length_range' => array( 2, 5 ) );
+		$this->mh->set( 'length_range', 'Required length: {length_range}' );
+		$got = $this->mh->format( '', 'length_range', $rules );
+		$expected = 'Required length: 2-5';
+		$this->assertEquals( $expected, $got );		
+	}
+	
+	function test_format_replaces_min_length_when_using_length_range() {
+		$rules = array( 'length_range' => array( 2, 5 ) );
+		$this->mh->set( 'length_range', 'Required length: {min_length}' );
+		$got = $this->mh->format( '', 'length_range', $rules );
+		$expected = 'Required length: 2';
+		$this->assertEquals( $expected, $got );		
+	}
+	
+	function test_format_replaces_max_length_when_using_length_range() {
+		$rules = array( 'length_range' => array( 2, 5 ) );
+		$this->mh->set( 'length_range', 'Required length: {max_length}' );
+		$got = $this->mh->format( '', 'length_range', $rules );
+		$expected = 'Required length: 5';
+		$this->assertEquals( $expected, $got );		
+	}
+	
+	// Start With
+	
+	function test_format_replaces_start_with() {
+		$rules = array( 'start_with' => 'hello' );
+		$this->mh->set( 'start_with', 'Should start with {start_with}.' );
+		$got = $this->mh->format( '', 'start_with', $rules );
+		$expected = 'Should start with hello.';
+		$this->assertEquals( $expected, $got );
+	}
+	
+	function test_format_replaces_start_with_by_all_their_values_separated_with_comma() {
+		$rules = array( 'start_with' => array( 'hello', 'hi' ) );
+		$this->mh->set( 'start_with', 'Should start with one of these: {start_with}.' );
+		$got = $this->mh->format( '', 'start_with', $rules );
+		$expected = 'Should start with one of these: hello, hi.';
+		$this->assertEquals( $expected, $got );
+	}
+	
+	// Mixed rules
+	
+	function test_format_allows_to_use_mixed_rules_in_the_message() {
 		$value = 'Bob';
 		$label = 'Name';
 		
@@ -146,7 +196,7 @@ class MessageHandlerTest extends PHPUnit_Framework_TestCase {
 		
 		$this->assertEquals( $expected, $got );		
 	}
-		
+	
 }
 
 ?>
