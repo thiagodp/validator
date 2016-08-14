@@ -96,10 +96,12 @@ var_dump( $messages );
 
 ## Features
 
-- [x] Validate basic types (see [example 1](https://github.com/thiagodp/validator/tree/master/examples/ex1.php))
-- [x] Validate arrays (see [example 2](https://github.com/thiagodp/validator/tree/master/examples/ex3.php))
-- [x] Validate dynamic objects (`stdClass`) (see [example 3](https://github.com/thiagodp/validator/tree/master/examples/ex3.php))
-- [x] Validate objects (of user-created classes) with private or protected attributes (see  [example 3](https://github.com/thiagodp/validator/tree/master/examples/ex3.php))
+- [x] Validates basic types (see [example 1](https://github.com/thiagodp/validator/tree/master/examples/ex1.php))
+- [x] Validates arrays (see [example 2](https://github.com/thiagodp/validator/tree/master/examples/ex3.php))
+- [x] Validates dynamic objects (`stdClass`) (see [example 3](https://github.com/thiagodp/validator/tree/master/examples/ex3.php))
+- [x] Validates objects (of user-created classes) with private or protected attributes (see  [example 3](https://github.com/thiagodp/validator/tree/master/examples/ex3.php))
+- [x] Supports localized messages (different locales)
+- [x] Supports different string formats (UTF, ISO-8859-1, ASCII, etc.)
 
 ### Available Rules
 
