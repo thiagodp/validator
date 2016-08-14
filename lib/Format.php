@@ -10,7 +10,8 @@ class Format {
 	
 	const ANYTHING			= 'anything';
 	const STRING			= 'string';				// same as "anything"
-	const NAME				= 'name';				// alpha, space, dot, dash
+	const NAME				= 'name';				// alpha, space, dot, dash, single comma, with at least two characters
+													
 	const WORD				= 'word';				// alpha, underline
 	const ALPHA_NUMERIC		= 'alphanumeric';		// alpha, number
 	const ALPHA				= 'alpha';				// just alpha
