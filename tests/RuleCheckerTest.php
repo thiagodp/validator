@@ -338,6 +338,28 @@ class RuleCheckerTest extends PHPUnit_Framework_TestCase {
 		$this->assertFalse( $this->rc->contains( 'x', array( 'w', 'world' ) ) );
 	}
 	
+	// Not Contains
+	
+	function test_not_contains_returns_false_when_value_is_found() {
+		$this->assertFalse( $this->rc->not_contains( 'world', 'w' ) );
+		$this->assertFalse( $this->rc->not_contains( 'world', 'o' ) );
+		$this->assertFalse( $this->rc->not_contains( 'world', 'd' ) );
+	}
+	
+	function test_not_contains_returns_true_when_value_is_not_found() {
+		$this->assertTrue( $this->rc->not_contains( 'world', 'x' ) );
+	}
+	
+	function test_not_contains_returns_false_when_value_is_found_in_any_array_item() {
+		$this->assertFalse( $this->rc->not_contains( 'world', array( 'w' ) ) );
+		$this->assertFalse( $this->rc->not_contains( 'world', array( 'x', 'w' ) ) );
+	}
+	
+	function test_not_contains_returns_true_when_value_is_not_found_in_any_array_item() {
+		$this->assertTrue( $this->rc->not_contains( 'world', array( 'x' ) ) );
+		$this->assertTrue( $this->rc->not_contains( 'x', array( 'w', 'world' ) ) );
+	}	
+	
 	// RegEx
 	
 	function test_regex_returns_false_does_not_match() {

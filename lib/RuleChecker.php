@@ -180,6 +180,10 @@ class RuleChecker {
 		return false;
 	}
 	
+	function not_contains( $value, $ruleValue ) {
+		return ! $this->contains( $value, $ruleValue );
+	}	
+	
 	function regex( $value, $ruleValue ) {
 		return 1 === preg_match( $ruleValue, $value );
 	}

@@ -30,6 +30,7 @@ class Rule {
 	const END_WITH			= 'end_with';
 	const NOT_END_WITH		= 'not_end_with';
 	const CONTAINS			= 'contains';
+	const NOT_CONTAINS		= 'not_contains';
 	
 	const REGEX				= 'regex';
 	const FORMAT			= 'format';

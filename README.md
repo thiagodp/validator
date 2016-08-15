@@ -121,6 +121,7 @@ var_dump( $messages );
 - [x] `end_with` (accepts a string or an array of strings, compared with "or")
 - [x] `not_end_with` (accepts a string or an array of strings, compared with "or")
 - [x] `contains` (accepts a string or an array of strings, compared with "or")
+- [x] `not_contains` (accepts a string or an array of strings, compared with "or")
 - [x] `regex`
 - [x] `format`: allows to use a format (see [Available Formats](#available-formats))
 - [x] `with`: allows to define rules for sub-arrays or sub-objects.
@@ -216,6 +217,7 @@ echo isset( $problems[ Rule::FORMAT ] ) ? 'myFormat as hurt' : 'passed';
 - [x] `{end_with}` shows the string or the set of strings separated by comma;
 - [x] `{not_end_with}` shows the string or the set of strings separated by comma;
 - [x] `{contains}` shows the string or the set of strings separated by comma;
+- [x] `{not_contains}` shows the string or the set of strings separated by comma;
 - [x] `{regex}` shows the defined regex;
 - [x] `{label}` shows the defined label, if defined. Otherwise, shows the array key or object attribute name;
 - [x] `{value}` shows the value.

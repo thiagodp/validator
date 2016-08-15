@@ -298,6 +298,20 @@ class ValidatorCheckTest extends PHPUnit_Framework_TestCase {
 		
 		$problems = $this->vd->check( 'camel', $rules );
 		$this->assertFalse( isset( $problems[ Rule::CONTAINS ] ) );		
+	}
+	
+	function test_validates_not_contains() {
+		$rules = array(
+			Rule::NOT_CONTAINS => array( 'a', 'l' )
+			);
+		$problems = $this->vd->check( 'b' , $rules );
+		$this->assertFalse( isset( $problems[ Rule::NOT_CONTAINS ] ) );
+		
+		$problems = $this->vd->check( 'gotcha', $rules );
+		$this->assertTrue( isset( $problems[ Rule::NOT_CONTAINS ] ) );
+		
+		$problems = $this->vd->check( 'camel', $rules );
+		$this->assertTrue( isset( $problems[ Rule::NOT_CONTAINS ] ) );		
 	}	
 	
 	function test_validates_multiple_rules() {
