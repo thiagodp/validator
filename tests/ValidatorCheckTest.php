@@ -98,4 +98,220 @@ class ValidatorCheckTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue( isset( $problems[ Rule::FORMAT ] ) );
 	}
 	
+	function test_validates_required() {
+		$rules = array(
+			Rule::REQUIRED => true
+			);
+		$problems = $this->vd->check( '', $rules );
+		$this->assertTrue( isset( $problems[ Rule::REQUIRED ] ) );
+	}
+	
+	function test_validates_min_length() {
+		$rules = array(
+			Rule::MIN_LENGTH => 1
+			);
+		$problems = $this->vd->check( '', $rules );
+		$this->assertTrue( isset( $problems[ Rule::MIN_LENGTH ] ) );
+	}
+	
+	function test_validates_max_length() {
+		$rules = array(
+			Rule::MAX_LENGTH => 1
+			);
+		$problems = $this->vd->check( 'ab', $rules );
+		$this->assertTrue( isset( $problems[ Rule::MAX_LENGTH ] ) );
+	}
+	
+	function test_validates_length_range() {
+		$rules = array(
+			Rule::LENGTH_RANGE => array( 1, 2 )
+			);
+		$problems = $this->vd->check( '', $rules );
+		$this->assertTrue( isset( $problems[ Rule::LENGTH_RANGE ] ) );
+		$problems = $this->vd->check( 'a', $rules );
+		$this->assertFalse( isset( $problems[ Rule::LENGTH_RANGE ] ) );
+		$problems = $this->vd->check( 'ab', $rules );
+		$this->assertFalse( isset( $problems[ Rule::LENGTH_RANGE ] ) );
+		$problems = $this->vd->check( 'abc', $rules );
+		$this->assertTrue( isset( $problems[ Rule::LENGTH_RANGE ] ) );
+	}
+	
+	function test_validates_min_value() {
+		$rules = array(
+			Rule::MIN_VALUE => 100
+			);
+		$problems = $this->vd->check( 99, $rules );
+		$this->assertTrue( isset( $problems[ Rule::MIN_VALUE ] ) );
+	}
+	
+	function test_validates_max_value() {
+		$rules = array(
+			Rule::MAX_VALUE => 100
+			);
+		$problems = $this->vd->check( 101, $rules );
+		$this->assertTrue( isset( $problems[ Rule::MAX_VALUE ] ) );
+	}
+	
+	function test_validates_value_range() {
+		$rules = array(
+			Rule::VALUE_RANGE => array( 100, 200 )
+			);
+		$problems = $this->vd->check( 99, $rules );
+		$this->assertTrue( isset( $problems[ Rule::VALUE_RANGE ] ) );
+		
+		$problems = $this->vd->check( 100, $rules );
+		$this->assertFalse( isset( $problems[ Rule::VALUE_RANGE ] ) );
+		
+		$problems = $this->vd->check( 200, $rules );
+		$this->assertFalse( isset( $problems[ Rule::VALUE_RANGE ] ) );
+		
+		$problems = $this->vd->check( 201, $rules );
+		$this->assertTrue( isset( $problems[ Rule::VALUE_RANGE ] ) );
+	}
+	
+	function test_validates_min_count() {
+		$rules = array(
+			Rule::MIN_COUNT => 1
+			);
+		$problems = $this->vd->check( array(), $rules );
+		$this->assertTrue( isset( $problems[ Rule::MIN_COUNT ] ) );
+		
+		$problems = $this->vd->check( array( 'a' ), $rules );
+		$this->assertFalse( isset( $problems[ Rule::MIN_COUNT ] ) );
+	}
+	
+	function test_validates_max_count() {
+		$rules = array(
+			Rule::MAX_COUNT => 2
+			);
+		$problems = $this->vd->check( array( 1, 2, 3 ), $rules );
+		$this->assertTrue( isset( $problems[ Rule::MAX_COUNT ] ) );
+		
+		$problems = $this->vd->check( array( 1, 2 ), $rules );
+		$this->assertFalse( isset( $problems[ Rule::MAX_COUNT ] ) );
+	}
+	
+	function test_validates_count_range() {
+		$rules = array(
+			Rule::COUNT_RANGE => array( 1, 2 )
+			);
+		$problems = $this->vd->check( array(), $rules );
+		$this->assertTrue( isset( $problems[ Rule::COUNT_RANGE ] ) );
+		
+		$problems = $this->vd->check( array( 1 ), $rules );
+		$this->assertFalse( isset( $problems[ Rule::COUNT_RANGE ] ) );
+		
+		$problems = $this->vd->check( array( 1, 2 ), $rules );
+		$this->assertFalse( isset( $problems[ Rule::COUNT_RANGE ] ) );
+		
+		$problems = $this->vd->check( array( 1, 2, 3 ), $rules );
+		$this->assertTrue( isset( $problems[ Rule::COUNT_RANGE ] ) );
+	}	
+	
+	function test_validates_in() {
+		$rules = array(
+			Rule::IN => array( 'a', 'c' )
+			);
+		$problems = $this->vd->check( 'b' , $rules );
+		$this->assertTrue( isset( $problems[ Rule::IN ] ) );
+		
+		$problems = $this->vd->check( 'a', $rules );
+		$this->assertFalse( isset( $problems[ Rule::IN ] ) );
+	}
+	
+	function test_validates_not_in() {
+		$rules = array(
+			Rule::NOT_IN => array( 'a', 'c' )
+			);
+		$problems = $this->vd->check( 'b' , $rules );
+		$this->assertFalse( isset( $problems[ Rule::NOT_IN ] ) );
+		
+		$problems = $this->vd->check( 'a', $rules );
+		$this->assertTrue( isset( $problems[ Rule::NOT_IN ] ) );
+	}
+	
+	function test_validates_start_with() {
+		$rules = array(
+			Rule::START_WITH => array( 'a', 'c' )
+			);
+		$problems = $this->vd->check( 'b' , $rules );
+		$this->assertTrue( isset( $problems[ Rule::START_WITH ] ) );
+		
+		$problems = $this->vd->check( 'allow', $rules );
+		$this->assertFalse( isset( $problems[ Rule::START_WITH ] ) );
+		
+		$problems = $this->vd->check( 'can', $rules );
+		$this->assertFalse( isset( $problems[ Rule::START_WITH ] ) );		
+	}
+	
+	function test_validates_not_start_with() {
+		$rules = array(
+			Rule::NOT_START_WITH => array( 'a', 'c' )
+			);
+		$problems = $this->vd->check( 'b' , $rules );
+		$this->assertFalse( isset( $problems[ Rule::NOT_START_WITH ] ) );
+		
+		$problems = $this->vd->check( 'allow', $rules );
+		$this->assertTrue( isset( $problems[ Rule::NOT_START_WITH ] ) );
+		
+		$problems = $this->vd->check( 'can', $rules );
+		$this->assertTrue( isset( $problems[ Rule::NOT_START_WITH ] ) );		
+	}	
+	
+	function test_validates_end_with() {
+		$rules = array(
+			Rule::END_WITH => array( 'a', 'l' )
+			);
+		$problems = $this->vd->check( 'b' , $rules );
+		$this->assertTrue( isset( $problems[ Rule::END_WITH ] ) );
+		
+		$problems = $this->vd->check( 'gotcha', $rules );
+		$this->assertFalse( isset( $problems[ Rule::END_WITH ] ) );
+		
+		$problems = $this->vd->check( 'camel', $rules );
+		$this->assertFalse( isset( $problems[ Rule::END_WITH ] ) );		
+	}	
+	
+	function test_validates_not_end_with() {
+		$rules = array(
+			Rule::NOT_END_WITH => array( 'a', 'l' )
+			);
+		$problems = $this->vd->check( 'b' , $rules );
+		$this->assertFalse( isset( $problems[ Rule::NOT_END_WITH ] ) );
+		
+		$problems = $this->vd->check( 'gotcha', $rules );
+		$this->assertTrue( isset( $problems[ Rule::NOT_END_WITH ] ) );
+		
+		$problems = $this->vd->check( 'camel', $rules );
+		$this->assertTrue( isset( $problems[ Rule::NOT_END_WITH ] ) );		
+	}
+	
+	function test_validates_contains() {
+		$rules = array(
+			Rule::CONTAINS => array( 'a', 'l' )
+			);
+		$problems = $this->vd->check( 'b' , $rules );
+		$this->assertTrue( isset( $problems[ Rule::CONTAINS ] ) );
+		
+		$problems = $this->vd->check( 'gotcha', $rules );
+		$this->assertFalse( isset( $problems[ Rule::CONTAINS ] ) );
+		
+		$problems = $this->vd->check( 'camel', $rules );
+		$this->assertFalse( isset( $problems[ Rule::CONTAINS ] ) );		
+	}	
+	
+	function test_validates_multiple_rules() {
+		$rules = array(
+			Rule::FORMAT => Format::EMAIL,
+			Rule::LENGTH_RANGE => array( 36, 60 ),
+			Rule::NOT_END_WITH => array( 'site.com', 'site.com.br' ),
+			);
+			
+		$problems = $this->vd->check( 'bob#site.com', $rules );
+		$this->assertFalse( empty( $problems ) );
+		$this->assertTrue( isset( $problems[ Rule::FORMAT ] ) );
+		$this->assertTrue( isset( $problems[ Rule::LENGTH_RANGE ] ) );
+		$this->assertTrue( isset( $problems[ Rule::NOT_END_WITH ] ) );
+	}
+	
 }

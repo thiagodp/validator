@@ -45,7 +45,7 @@ class RuleChecker {
 	}
 	
 	function methods() {
-		return array_merge( $this->originalMethods, $this->methods );
+		return $this->originalMethods + $this->methods; // array_merge
 	}	
 	
 	// CONFIGURATION
@@ -142,7 +142,8 @@ class RuleChecker {
 	function start_with( $value, $ruleValue ) {
 		$rule = is_array( $ruleValue ) ? $ruleValue : array( $ruleValue );
 		foreach ( $rule as $r ) {
-			if ( 0 === mb_strpos( $r, $value ) ) {
+			// The value should start with the rule word
+			if ( 0 === mb_strpos( $value, $r ) ) {
 				return true;
 			}
 		}
@@ -157,8 +158,8 @@ class RuleChecker {
 		$rule = is_array( $ruleValue ) ? $ruleValue : array( $ruleValue );
 		$valueLength = mb_strlen( $value );
 		foreach ( $rule as $r ) {
-			$expectedPosition = mb_strlen( $r ) - $valueLength;
-			if ( $expectedPosition === mb_strrpos( $r, $value ) ) {
+			$expectedPosition = $valueLength - mb_strlen( $r );
+			if ( $expectedPosition === mb_strrpos( $value, $r ) ) {
 				return true;
 			}
 		}
@@ -172,7 +173,7 @@ class RuleChecker {
 	function contains( $value, $ruleValue ) {
 		$rule = is_array( $ruleValue ) ? $ruleValue : array( $ruleValue );
 		foreach ( $rule as $r ) {
-			if ( mb_strpos( $r, $value ) !== false ) {
+			if ( mb_strpos( $value, $r ) !== false ) {
 				return true;
 			}
 		}

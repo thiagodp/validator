@@ -237,37 +237,37 @@ class RuleCheckerTest extends PHPUnit_Framework_TestCase {
 	// Start With
 	
 	function test_start_with_returns_true_when_non_array_value_is_found_in_the_beginning() {
-		$this->assertTrue( $this->rc->start_with( 'hello', 'hello world' ) );
+		$this->assertTrue( $this->rc->start_with( 'hello world', 'hello' ) );
 	}
 	
 	function test_start_with_returns_false_when_non_array_value_is_not_found_in_the_beginning() {
-		$this->assertFalse( $this->rc->start_with( 'ello', 'hello world' ) );
+		$this->assertFalse( $this->rc->start_with( 'hello world', 'ello' ) );
 	}
 	
 	function test_start_with_returns_true_when_value_is_found_in_the_beginning_the_first_array_value() {
-		$this->assertTrue( $this->rc->start_with( 'hello', array( 'hello world' ) ) );
+		$this->assertTrue( $this->rc->start_with( 'hello world', array( 'hello' )  ) );
 	}
-	
+
 	function test_start_with_returns_false_when_value_is_not_found_in_the_beginning_of_array_values() {
 		$this->assertFalse( $this->rc->start_with( 'hi', array( 'hello', 'howdy' ) ) );
 	}	
 	
 	function test_start_with_returns_true_when_value_is_found_in_the_beginning_of_any_array_item() {
-		$this->assertTrue( $this->rc->start_with( 'hello', array( 'hi', 'hello world' ) ) );
+		$this->assertTrue( $this->rc->start_with( 'hello world', array( 'hi', 'hello' ) ) );
 	}
 	
 	// Not Start With
 	
 	function test_not_start_with_returns_false_when_value_is_found_in_the_beginning() {
-		$this->assertFalse( $this->rc->not_start_with( 'hello', 'hello world' ) );
+		$this->assertFalse( $this->rc->not_start_with( 'hello world', 'hello' ) );
 	}
 	
 	function test_not_start_with_returns_true_when_value_is_not_found_in_the_beginning() {
-		$this->assertTrue( $this->rc->not_start_with( 'ello', 'hello world' ) );
+		$this->assertTrue( $this->rc->not_start_with( 'hello world', 'ello' ) );
 	}
 	
 	function test_not_start_with_returns_false_when_value_is_found_in_the_beginning_the_first_array_value() {
-		$this->assertFalse( $this->rc->not_start_with( 'hello', array( 'hello world' ) ) );
+		$this->assertFalse( $this->rc->not_start_with( 'hello world', array( 'hello' ) ) );
 	}
 	
 	function test_not_start_with_returns_true_when_value_is_not_found_in_the_beginning_of_array_values() {
@@ -275,66 +275,66 @@ class RuleCheckerTest extends PHPUnit_Framework_TestCase {
 	}	
 	
 	function test_not_start_with_returns_false_when_value_is_found_in_the_beginning_of_any_array_item() {
-		$this->assertFalse( $this->rc->not_start_with( 'hello', array( 'hi', 'hello world' ) ) );
+		$this->assertFalse( $this->rc->not_start_with( 'hello world', array( 'hi', 'hello' ) ) );
 	}
 	
 	// End With
 	
 	function test_end_with_returns_true_when_value_is_found_in_the_end() {
-		$this->assertTrue( $this->rc->end_with( 'world', 'hello world' ) );
+		$this->assertTrue( $this->rc->end_with( 'hello world', 'world' ) );
 	}
 	
 	function test_end_with_returns_false_when_value_is_not_found_in_the_end() {
-		$this->assertFalse( $this->rc->end_with( 'worl', 'hello world' ) );
+		$this->assertFalse( $this->rc->end_with( 'hello world', 'worl' ) );
 	}
 	
 	function test_end_with_returns_true_when_value_is_found_in_the_end_of_any_array_value() {
-		$this->assertTrue( $this->rc->end_with( 'world', array( 'hello world' ) ) );
-		$this->assertTrue( $this->rc->end_with( 'world', array( 'hi', 'hello world' ) ) );
+		$this->assertTrue( $this->rc->end_with( 'hello world', array( 'world' ) ) );
+		$this->assertTrue( $this->rc->end_with( 'hello world', array( 'hi', 'world' ) ) );
 	}
 	
 	function test_end_with_returns_false_when_value_is_not_found_in_the_end_of_any_array_value() {
-		$this->assertFalse( $this->rc->end_with( 'world', array( 'hello world, Bob', 'howdy' ) ) );
+		$this->assertFalse( $this->rc->end_with( 'hello world, Bob', array( 'howdy', 'world' ) ) );
 	}
 	
 	// Not End With
 	
 	function test_not_end_with_returns_false_when_value_is_found_in_the_end() {
-		$this->assertFalse( $this->rc->not_end_with( 'world', 'hello world' ) );
+		$this->assertFalse( $this->rc->not_end_with( 'hello world', 'world' ) );
 	}
 	
 	function test_not_end_with_returns_true_when_value_is_not_found_in_the_end() {
-		$this->assertTrue( $this->rc->not_end_with( 'worl', 'hello world' ) );
+		$this->assertTrue( $this->rc->not_end_with( 'hello world', 'worl' ) );
 	}
 	
 	function test_not_end_with_returns_false_when_value_is_found_in_the_end_of_any_array_value() {
-		$this->assertFalse( $this->rc->not_end_with( 'world', array( 'hello world' ) ) );
-		$this->assertFalse( $this->rc->not_end_with( 'world', array( 'hi', 'hello world' ) ) );
+		$this->assertFalse( $this->rc->not_end_with( 'hello world', array( 'world' ) ) );
+		$this->assertFalse( $this->rc->not_end_with( 'hello world', array( 'hi', 'world' ) ) );
 	}
 	
 	function test_not_end_with_returns_true_when_value_is_not_found_in_the_end_of_any_array_value() {
-		$this->assertTrue( $this->rc->not_end_with( 'world', array( 'hello world, Bob', 'howdy' ) ) );
+		$this->assertTrue( $this->rc->not_end_with( 'hello world, Bob', array( 'howdy', 'world' ) ) );
 	}
 	
 	// Contains
 	
 	function test_contains_returns_true_when_value_is_found() {
-		$this->assertTrue( $this->rc->contains( 'w', 'world' ) );
-		$this->assertTrue( $this->rc->contains( 'o', 'world' ) );
-		$this->assertTrue( $this->rc->contains( 'd', 'world' ) );
+		$this->assertTrue( $this->rc->contains( 'world', 'w' ) );
+		$this->assertTrue( $this->rc->contains( 'world', 'o' ) );
+		$this->assertTrue( $this->rc->contains( 'world', 'd' ) );
 	}
 	
 	function test_contains_returns_false_when_value_is_not_found() {
-		$this->assertFalse( $this->rc->contains( 'x', 'world' ) );
+		$this->assertFalse( $this->rc->contains( 'world', 'x' ) );
 	}
 	
 	function test_contains_returns_true_when_value_is_found_in_any_array_item() {
-		$this->assertTrue( $this->rc->contains( 'w', array( 'world' ) ) );
-		$this->assertTrue( $this->rc->contains( 'w', array( 'x', 'world' ) ) );
+		$this->assertTrue( $this->rc->contains( 'world', array( 'w' ) ) );
+		$this->assertTrue( $this->rc->contains( 'world', array( 'x', 'w' ) ) );
 	}
 	
 	function test_contains_returns_false_when_value_is_not_found_in_any_array_item() {
-		$this->assertFalse( $this->rc->contains( 'x', array( 'world' ) ) );
+		$this->assertFalse( $this->rc->contains( 'world', array( 'x' ) ) );
 		$this->assertFalse( $this->rc->contains( 'x', array( 'w', 'world' ) ) );
 	}
 	
