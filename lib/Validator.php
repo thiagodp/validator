@@ -11,9 +11,6 @@ use \phputil\RTTI;
 class Validator {
 	
 	const DEFAULT_LOCALE = 'en'; // English
-	
-	private $locale;
-	private $encoding;
 
 	private $messageHandler;
 	private $formatChecker;
@@ -22,36 +19,45 @@ class Validator {
 	/**
 	 *	Creates the validator.  
 	 *
-	 *  @param string $locale	(Optional) Locale. Defaults to DEFAULT_LOCALE.
-	 *  @param string $encoding	(Optional) Encoding. Defaults to
-	 *  						Encoding::DEFAULT_ENCODING.
+	 *  @param string $locale	(Optional) Locale.
+	 *  						Defaults to DEFAULT_LOCALE.
+	 *  
+	 *  @param string $encoding	(Optional) Encoding.
+	 *  						Defaults to Encoding::DEFAULT_ENCODING.
 	 *  
 	 *  @return Validator
 	 */
 	function __construct( $locale = null, $encoding = null ) {
-		$this->locale = isset( $locale ) ? $locale : self::DEFAULT_LOCALE;
-		$this->encoding = isset( $encoding ) ? $encoding : Encoding::DEFAULT_ENCODING;
-		$this->messageHandler = new MessageHandler( $this->locale );
-		$this->formatChecker = new FormatChecker( $this->encoding );
-		$this->ruleChecker = new RuleChecker( $this->formatChecker, $this->locale, $this->encoding );
+		
+		$loc = isset( $locale ) ? $locale : self::DEFAULT_LOCALE;
+		$this->messageHandler = new MessageHandler( $loc );
+		
+		$enc = isset( $encoding ) ? $encoding : Encoding::DEFAULT_ENCODING;
+		$this->formatChecker = new FormatChecker( $enc );
+		
+		$this->ruleChecker = new RuleChecker( $this->formatChecker, $loc, $enc );
 	}
 	
 	/**
-	 *  Returns the current validation locale (e.g. "en").
+	 *  Get or set the current locale.
 	 *  
+	 *  @param string $value	(Optional) Locale (e.g. "en" ).
+	 *  						Sets the locale if given.
 	 *  @return string
 	 */
-	function locale() {
-		return $this->locale;
+	function locale( $value = null ) {
+		return $this->messageHandler->locale( $value );
 	}
 	
 	/**
-	 *  Returns the current validation encoding (e.g. "UTF-8").
+	 *  Get or set the current encoding.
 	 *  
+	 *  @param string $value	(Optional) Encoding (e.g. "UTF-8").
+	 *  						Sets the encoding if given.
 	 *  @return string
 	 */	
-	function encoding() {
-		return $this->encoding;
+	function encoding( $value = null ) {
+		return $this->formatChecker->encoding( $value );
 	}
 	
 	// MESSAGE

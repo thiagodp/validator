@@ -21,6 +21,8 @@ class MessageHandlerTest extends PHPUnit_Framework_TestCase {
 		$this->mh = new MessageHandler( $this->locale );
 	}
 	
+	// Locale
+	
 	function test_can_add_messages_to_an_empty_locale() {
 		$m = new MessageHandler( '' );
 		$message = 'value';
@@ -48,13 +50,28 @@ class MessageHandlerTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $expected, $this->mh->messages() );
 	}
 	
+	function test_format_returns_the_correct_localized_message() {
+		$messages = array(
+			'en' => array( 'hello' => 'Hello!' ),
+			'pt' => array( 'hello' => 'Olá!' )
+			);
+		$this->mh->setMessages( $messages );
+		
+		$msg = $this->mh->ruleMessage( 'hello' );
+		$this->assertEquals( 'Hello!', $msg );
+		
+		$this->mh->locale( 'pt' );
+		$msg = $this->mh->ruleMessage( 'hello' );
+		$this->assertEquals( 'Olá!', $msg );
+	}
+	
+	// Value
+	
 	function test_format_returns_an_empty_message_when_the_rule_is_not_found() {
 		$expected = '';
 		$got = $this->mh->format( 'any value', 'rule key', array() );
 		$this->assertEquals( $expected, $got );
 	}
-	
-	// Value
 	
 	function test_format_allows_to_use_the_value() {
 		$value = 'hello';

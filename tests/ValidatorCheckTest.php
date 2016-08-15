@@ -98,6 +98,8 @@ class ValidatorCheckTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue( isset( $problems[ Rule::FORMAT ] ) );
 	}
 	
+	// Rules
+	
 	function test_validates_required() {
 		$rules = array(
 			Rule::REQUIRED => true
@@ -326,6 +328,40 @@ class ValidatorCheckTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue( isset( $problems[ Rule::FORMAT ] ) );
 		$this->assertTrue( isset( $problems[ Rule::LENGTH_RANGE ] ) );
 		$this->assertTrue( isset( $problems[ Rule::NOT_END_WITH ] ) );
+	}
+	
+	// Locale
+	
+	function test_returns_the_correct_localized_message() {
+		$messages = array(
+			'en' => array( 'hello' => 'Hello!' ),
+			'pt' => array( 'hello' => 'Olá!' )
+			);
+		$this->vd->setMessages( $messages );
+		
+		$msg = $this->vd->ruleMessage( 'hello' );
+		$this->assertEquals( 'Hello!', $msg );
+		
+		$this->vd->locale( 'pt' );
+		$msg = $this->vd->ruleMessage( 'hello' );
+		$this->assertEquals( 'Olá!', $msg );
+	}
+
+	function test_returns_problems_with_the_correct_localized_message() {
+		$messages = array(
+			'en' => array( Rule::REQUIRED => 'Required!' ),
+			'pt' => array( Rule::REQUIRED => 'Obrigatório!' )
+			);
+		$this->vd->setMessages( $messages );
+		
+		$problems = $this->vd->check( '', array( Rule::REQUIRED => true ) );
+		$this->assertTrue( isset( $problems[ Rule::REQUIRED ] ) );
+		$this->assertEquals( 'Required!', $problems[ Rule::REQUIRED ] );
+		
+		$this->vd->locale( 'pt' );
+		$problems = $this->vd->check( '', array( Rule::REQUIRED => true ) );
+		$this->assertTrue( isset( $problems[ Rule::REQUIRED ] ) );
+		$this->assertEquals( 'Obrigatório!', $problems[ Rule::REQUIRED ] );		
 	}
 	
 }
