@@ -260,7 +260,9 @@ class Validator {
 		, array &$problems
 		) {
 		
-		foreach ( $fieldToRulesMap as $field => $rules ) {
+		foreach ( $fieldToRulesMap as $field => $fieldRules ) {
+			
+			$rules = is_array( $fieldRules ) ? $fieldRules : array( $fieldRules );
 			
 			$value = array_key_exists( $field, $valuesMap ) ? $valuesMap[ $field ] : '';
 			$label = isset( $rules[ Option::LABEL ] ) ? $rules[ Option::LABEL ] : $field;
