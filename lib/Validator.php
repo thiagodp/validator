@@ -270,7 +270,11 @@ class Validator {
 			$fieldProblems = array();
 			foreach ( $rules as $k => $v ) {
 				
-				if ( Rule::WITH == $k ) {				
+				if ( Rule::WITH == $k ) {
+					
+					if ( ! array_key_exists( $field, $valuesMap ) ) {
+						continue;
+					}
 					
 					if ( ! array_key_exists( $field, $problems ) ) {
 						$problems[ $field ] = array();
