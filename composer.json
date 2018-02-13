@@ -4,7 +4,7 @@
 	"description": "Easy and powerful validator for PHP",
 	"keywords": [ "validator", "validation", "check", "testing", "input" ],
 	"homepage": "http://github.com/thiagodp/validator",
-	"license": "LGPL-3",
+	"license": "LGPL-3.0-or-later",
 	"authors": [ { "name": "Thiago Delgado Pinto" } ],
 	"support": {
 		"issues": "https://github.com/thiagodp/validator/issues",
